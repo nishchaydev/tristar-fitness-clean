@@ -20,45 +20,45 @@ export interface AuthState {
   isLoading: boolean;
 }
 
-// Sample users for demonstration
+// Sample users for demonstration (using fictional data)
 export const sampleUsers: User[] = [
   {
     id: '1',
-    username: 'nikhil',
-    email: 'nikhil@tristarfitness.com',
+    username: 'owner',
+    email: 'owner@tristarfitness.com',
     role: 'owner',
-    name: 'Nikhil Verma',
-    phone: '+91 98765 43210',
+    name: 'John Smith',
+    phone: '+1 555 0123',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
   },
   {
     id: '2',
-    username: 'yash',
-    email: 'yash@tristarfitness.com',
+    username: 'trainer1',
+    email: 'trainer1@tristarfitness.com',
     role: 'trainer',
-    name: 'Yash',
-    phone: '+91 98765 43211',
+    name: 'Arjun Kumar',
+    phone: '+1 555 0124',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
   },
   {
     id: '3',
-    username: 'mohit',
-    email: 'mohit@tristarfitness.com',
+    username: 'trainer2',
+    email: 'trainer2@tristarfitness.com',
     role: 'trainer',
-    name: 'Mohit Sen',
-    phone: '+91 98765 43212',
+    name: 'Priya Sharma',
+    phone: '+1 555 0125',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
   },
   {
     id: '4',
-    username: 'palak',
-    email: 'palak@tristarfitness.com',
+    username: 'trainer3',
+    email: 'trainer3@tristarfitness.com',
     role: 'trainer',
-    name: 'Palak Dubey',
-    phone: '+91 98765 43213',
+    name: 'Alex Johnson',
+    phone: '+1 555 0126',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
   },
@@ -66,10 +66,10 @@ export const sampleUsers: User[] = [
 
 // Simple password storage (in real app, use proper hashing)
 const userPasswords: Record<string, string> = {
-  'nikhil': 'nikhil123',
-  'yash': 'yash123',
-  'mohit': 'mohit123',
-  'palak': 'palak123',
+  'owner': 'owner123',
+  'trainer1': 'trainer123',
+  'trainer2': 'trainer123',
+  'trainer3': 'trainer123',
 };
 
 // Authentication functions

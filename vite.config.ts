@@ -5,6 +5,7 @@ import { viteSourceLocator } from "@metagptx/vite-plugin-source-locator";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/tristar-fitness-clean/' : '/',
   plugins: [
     viteSourceLocator({
       prefix: "mgx",

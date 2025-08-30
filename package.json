@@ -1,5 +1,6 @@
 {
   "name": "tristar-fitness",
+  "homepage": "https://nishchaydev.github.io/tristar-fitness-clean",
   "type": "module",
   "packageManager": "pnpm@8.10.0",
   "scripts": {
