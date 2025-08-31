@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import React from 'react'
+import { SupabaseService } from './supabase'
 
 // Data interfaces
 export interface Member {
@@ -113,6 +114,10 @@ interface DataStore {
   followUps: FollowUp[]
   activities: Activity[]
   
+  // Supabase sync status
+  isSupabaseConnected: boolean
+  lastSyncTime: string | null
+  
   // Actions
   addMember: (member: Omit<Member, 'id'>) => void
   updateMember: (id: string, updates: Partial<Member>) => void
@@ -155,6 +160,10 @@ interface DataStore {
   clearAllData: () => void
   importData: (data: any) => void
   initializeDemoData: () => void
+  
+  // Supabase sync functions
+  syncWithSupabase: () => Promise<void>
+  testSupabaseConnection: () => Promise<boolean>
 }
 
 // Initial data
@@ -655,6 +664,10 @@ export const useDataStore = create<DataStore>()(
       followUps: initialFollowUps,
       activities: initialActivities,
 
+      // Supabase sync status
+      isSupabaseConnected: false,
+      lastSyncTime: null,
+
       // Member actions
       addMember: (member) => set((state) => {
         const newMember = { ...member, id: Date.now().toString() }
@@ -1082,7 +1095,43 @@ export const useDataStore = create<DataStore>()(
         invoices: initialInvoices,
         followUps: initialFollowUps,
         activities: initialActivities
-      })
+      }),
+
+             // Supabase sync functions
+       syncWithSupabase: async () => {
+         try {
+           const isConnected = await SupabaseService.testConnection()
+           if (!isConnected) {
+             set({ isSupabaseConnected: false, lastSyncTime: null })
+             return
+           }
+
+           // Sync all data from Supabase
+           const supabaseData = await SupabaseService.syncAllData()
+           
+           set({
+             members: supabaseData.members,
+             trainers: supabaseData.trainers,
+             sessions: supabaseData.sessions,
+             visitors: supabaseData.visitors,
+             invoices: supabaseData.invoices,
+             followUps: supabaseData.followUps,
+             isSupabaseConnected: true,
+             lastSyncTime: new Date().toISOString()
+           })
+           
+           console.log('✅ Data synced with Supabase successfully')
+         } catch (error) {
+           console.error('❌ Failed to sync with Supabase:', error)
+           set({ isSupabaseConnected: false, lastSyncTime: null })
+         }
+       },
+
+       testSupabaseConnection: async () => {
+         const isConnected = await SupabaseService.testConnection()
+         set({ isSupabaseConnected: isConnected })
+         return isConnected
+       }
     }),
     {
       name: 'tristar-fitness-data',

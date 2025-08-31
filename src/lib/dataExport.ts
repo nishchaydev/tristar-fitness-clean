@@ -84,85 +84,91 @@ export class DataExporter {
       });
       
       // Create a simple HTML table that can be printed as PDF
-      const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>${title}</title>
-          <style>
-            body { 
-              font-family: Arial, sans-serif; 
-              margin: 20px; 
-              font-size: 12px;
+      const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 20px; 
+      font-size: 12px;
+      color: #333;
+    }
+    h1 { 
+      color: #22c55e; 
+      text-align: center; 
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 20px; 
+      font-size: 11px;
+    }
+    th, td { 
+      border: 1px solid #ddd; 
+      padding: 6px; 
+      text-align: left; 
+      word-wrap: break-word;
+      max-width: 150px;
+    }
+    th { 
+      background-color: #22c55e; 
+      color: white; 
+      font-weight: bold; 
+    }
+    tr:nth-child(even) { background-color: #f8fafc; }
+    .header { text-align: center; margin-bottom: 20px; }
+    .timestamp { color: #666; font-size: 10px; }
+    @media print { 
+      body { margin: 0; }
+      table { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>${title}</h1>
+    <p class="timestamp">Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+  </div>
+  
+  <table>
+    <thead>
+      <tr>
+        ${headers.map(header => `<th>${header}</th>`).join('')}
+      </tr>
+    </thead>
+    <tbody>
+      ${data.map(row => `
+        <tr>
+          ${headers.map(header => {
+            const value = row[header];
+            let displayValue = '';
+            
+            if (Array.isArray(value)) {
+              displayValue = value.join(', ');
+            } else if (typeof value === 'object' && value !== null) {
+              displayValue = JSON.stringify(value);
+            } else if (value === null || value === undefined) {
+              displayValue = '';
+            } else {
+              displayValue = String(value);
             }
-            h1 { 
-              color: #22c55e; 
-              text-align: center; 
-              margin-bottom: 10px;
-            }
-            table { 
-              width: 100%; 
-              border-collapse: collapse; 
-              margin-top: 20px; 
-              font-size: 11px;
-            }
-            th, td { 
-              border: 1px solid #ddd; 
-              padding: 6px; 
-              text-align: left; 
-              word-wrap: break-word;
-              max-width: 150px;
-            }
-            th { 
-              background-color: #22c55e; 
-              color: white; 
-              font-weight: bold; 
-            }
-            tr:nth-child(even) { background-color: #f8fafc; }
-            .header { text-align: center; margin-bottom: 20px; }
-            .timestamp { color: #666; font-size: 10px; }
-            @media print { 
-              body { margin: 0; }
-              table { font-size: 10px; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>${title}</h1>
-            <p class="timestamp">Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-          </div>
-          
-          <table>
-            <thead>
-              <tr>
-                ${headers.map(header => `<th>${header}</th>`).join('')}
-              </tr>
-            </thead>
-            <tbody>
-              ${data.map(row => `
-                <tr>
-                  ${headers.map(header => {
-                    const value = row[header];
-                    let displayValue = value;
-                    
-                    if (Array.isArray(value)) {
-                      displayValue = value.join(', ');
-                    } else if (typeof value === 'object' && value !== null) {
-                      displayValue = JSON.stringify(value);
-                    } else if (value === null || value === undefined) {
-                      displayValue = '';
-                    }
-                    
-                    return `<td>${displayValue}</td>`;
-                  }).join('')}
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </body>
-        </html>
-      `;
+            
+            return `<td>${displayValue}</td>`;
+          }).join('')}
+        </tr>
+      `).join('')}
+    </tbody>
+  </table>
+</body>
+</html>`;
+
+      console.log('HTML content generated, length:', htmlContent.length);
 
       const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
