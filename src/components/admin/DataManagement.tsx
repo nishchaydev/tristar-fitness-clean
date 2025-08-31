@@ -244,8 +244,8 @@ const DataManagement = () => {
                     )}
                     className="hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/30 dark:hover:text-red-300 transition-all duration-200 group/btn hover:scale-105"
                   >
-                    <FileText className="w-4 h-4 group-hover/btn:animate-pulse" />
-                    PDF
+                    <FileText className="h-4 w-4 group-hover/btn:animate-pulse" />
+                    HTML
                   </Button>
                 </div>
               </div>
