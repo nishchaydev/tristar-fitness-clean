@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => ({
   base: mode === 'production' ? '/tristar-fitness-clean/' : '/',
   plugins: [
     viteSourceLocator({
-      prefix: "mgx",
+      prefix: "tristar",
     }),
     react(),
   ],

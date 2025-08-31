@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/contexts/AuthContext'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
@@ -16,6 +16,8 @@ import NotFound from '@/pages/NotFound'
 import './App.css'
 
 function App() {
+  console.log('App component rendering...');
+  
   return (
     <AuthProvider>
       <Router>
