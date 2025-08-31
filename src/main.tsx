@@ -3,8 +3,11 @@ import { ErrorBoundary } from 'react-error-boundary';
 import App from './App.tsx';
 import './index.css';
 
+console.log('main.tsx loading...');
+
 // Error fallback component
 function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
+  console.error('Error caught by boundary:', error);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center p-8">
@@ -28,8 +31,12 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
+console.log('Root element found, creating React root...');
+
 // Create root and render with error boundary
 const root = createRoot(rootElement);
+
+console.log('Rendering App component...');
 
 root.render(
   <ErrorBoundary FallbackComponent={ErrorFallback}>
