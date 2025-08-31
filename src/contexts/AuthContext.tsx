@@ -153,39 +153,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatch({ type: 'LOGIN_START' });
     
     try {
-      if (state.isBackendAvailable) {
-        // Try backend login first
-        try {
-          const response = await apiClient.login(credentials.username, credentials.password);
-          if (response.success && response.data?.user) {
-            // Save user and token to localStorage for persistence
-            localStorage.setItem('tristar_fitness_user', JSON.stringify(response.data.user));
-            if (response.data.token) {
-              localStorage.setItem('auth_token', response.data.token);
-            }
-            dispatch({ type: 'LOGIN_SUCCESS', payload: response.data.user });
-            return true;
-          }
-        } catch (error) {
-          console.warn('Backend login failed, falling back to local auth');
-        }
-      }
-
-      // Fallback to local authentication
-      console.log('🔄 Falling back to local authentication...');
+      // Always try local authentication first for demo purposes
+      console.log('🔄 Using local authentication...');
       const user = authenticateUser(credentials);
+      
       if (user) {
         console.log('✅ Local auth successful for:', user.name);
-        // For local auth, create a demo token
+        // Create a demo token
         const demoToken = `demo-token-${Date.now()}`;
         apiClient.setToken(demoToken);
-        localStorage.setItem('auth_token', demoToken); // Save the demo token
+        localStorage.setItem('auth_token', demoToken);
         localStorage.setItem('tristar_fitness_user', JSON.stringify(user));
         console.log('💾 Saved to localStorage:', { user: user.name, token: demoToken });
         dispatch({ type: 'LOGIN_SUCCESS', payload: user });
         return true;
       } else {
-        console.log('❌ Local auth failed');
+        console.log('❌ Local auth failed for credentials:', credentials.username);
         dispatch({ type: 'LOGIN_FAILURE' });
         return false;
       }

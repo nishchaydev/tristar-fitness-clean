@@ -71,17 +71,28 @@ export const sampleUsers: User[] = [
     phone: '+91 98765 43213',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
+  },
+  {
+    id: '6',
+    username: 'raj',
+    email: 'raj@tristarfitness.com',
+    role: 'semi-admin',
+    name: 'Raj Kumar',
+    phone: '+91 98765 43214',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    lastLogin: new Date().toISOString(),
   }
 ];
 
- // Simple password storage (in real app, use proper hashing)
- const userPasswords: Record<string, string> = {
-   'owner': 'demo123',
-   'yash': 'demo123',
-   'mohit': 'demo123',
-   'palak': 'demo123',
-   'nikhil': 'demo123',
- };
+// Simple password storage (in real app, use proper hashing)
+const userPasswords: Record<string, string> = {
+  'owner': 'demo123',
+  'yash': 'demo123',
+  'mohit': 'demo123',
+  'palak': 'demo123',
+  'nikhil': 'demo123',
+  'raj': 'demo123',
+};
 
 // Authentication functions
 export const authenticateUser = (credentials: LoginCredentials): User | null => {

@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
+import JSZip from 'jszip';
 
 export interface ExportData {
   members: any[];

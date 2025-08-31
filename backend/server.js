@@ -45,7 +45,10 @@ app.use(securityMiddleware);
 app.use(compression());
 
 // CORS configuration
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+}));
 
 // Request parsing middleware
 app.use(express.json(requestLimits.json));
@@ -68,7 +71,6 @@ app.use('/api/upload', rateLimiters.upload);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'TriStar Fitness API Documentation',
-  customfavIcon: '/favicon.ico'
 }));
 
 console.log('📚 Swagger documentation initialized');
