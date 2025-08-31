@@ -143,34 +143,34 @@ const Login = () => {
                  <Button
                    variant="outline"
                    size="sm"
-                   onClick={() => quickLogin('nikhil', 'nikhil123')}
+                   onClick={() => quickLogin('owner', 'owner123')}
                    className="text-xs"
                  >
-                   🏢 Nikhil Verma - Gym Owner (Full Access)
+                   🏢 John Smith - Gym Owner (Full Access)
                  </Button>
                  <Button
                    variant="outline"
                    size="sm"
-                   onClick={() => quickLogin('yash', 'yash123')}
+                   onClick={() => quickLogin('trainer1', 'trainer123')}
                    className="text-xs"
                  >
-                   🏋️‍♂️ Yash - Trainer (Limited Access)
+                   🏋️‍♂️ Arjun Kumar - Trainer (Limited Access)
                  </Button>
                  <Button
                    variant="outline"
                    size="sm"
-                   onClick={() => quickLogin('mohit', 'mohit123')}
+                   onClick={() => quickLogin('trainer2', 'trainer123')}
                    className="text-xs"
                  >
-                   🏋️‍♂️ Mohit Sen - Trainer (Limited Access)
+                   🏋️‍♂️ Priya Sharma - Trainer (Limited Access)
                  </Button>
                  <Button
                    variant="outline"
                    size="sm"
-                   onClick={() => quickLogin('palak', 'palak123')}
+                   onClick={() => quickLogin('trainer3', 'trainer123')}
                    className="text-xs"
                  >
-                   🏋️‍♀️ Palak Dubey - Trainer (Limited Access)
+                   🏋️‍♀️ Alex Johnson - Trainer (Limited Access)
                  </Button>
                </div>
              </div>
