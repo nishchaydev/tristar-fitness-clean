@@ -20,16 +20,35 @@ interface ApiError {
 class ApiClient {
   private baseURL: string;
   private token: string | null = null;
+  private isOnline: boolean = true;
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
     this.token = localStorage.getItem('auth_token');
+    this.checkConnectivity();
+  }
+
+  private async checkConnectivity(): Promise<void> {
+    try {
+      const response = await fetch(`${this.baseURL}/health`, { 
+        method: 'GET',
+        signal: AbortSignal.timeout(5000) // 5 second timeout
+      });
+      this.isOnline = response.ok;
+    } catch (error) {
+      console.warn('Backend connectivity check failed:', error);
+      this.isOnline = false;
+    }
   }
 
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
+    if (!this.isOnline) {
+      throw new Error('Backend is not available');
+    }
+
     const url = `${this.baseURL}${endpoint}`;
     
     const headers: HeadersInit = {
@@ -42,42 +61,63 @@ class ApiClient {
     }
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const response = await fetch(url, {
         ...options,
         headers,
+        signal: controller.signal,
       });
 
-      const data = await response.json();
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
-        throw new Error(data.message || `HTTP ${response.status}`);
+        const errorData = await response.json().catch(() => ({ message: `HTTP ${response.status}` }));
+        throw new Error(errorData.message || `HTTP ${response.status}`);
       }
 
+      const data = await response.json();
       return data;
     } catch (error) {
       console.error('API Error:', error);
-      throw error;
+      
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          throw new Error('Request timeout');
+        }
+        throw error;
+      }
+      
+      throw new Error('Unknown API error');
     }
   }
 
   // Authentication
   async login(username: string, password: string): Promise<ApiResponse> {
-    const response = await this.request('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const response = await this.request('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (response.success && response.data?.token) {
-      this.token = response.data.token;
-      localStorage.setItem('auth_token', this.token);
+      if (response.success && response.data?.token) {
+        this.token = response.data.token;
+        localStorage.setItem('auth_token', this.token);
+      }
+
+      return response;
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error;
     }
-
-    return response;
   }
 
   async logout(): Promise<void> {
     try {
-      await this.request('/api/auth/logout', { method: 'POST' });
+      if (this.isOnline) {
+        await this.request('/api/auth/logout', { method: 'POST' });
+      }
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -98,19 +138,18 @@ class ApiClient {
     page?: number;
     limit?: number;
     search?: string;
-    sortBy?: string;
-    sortOrder?: string;
   }): Promise<ApiResponse> {
     const queryParams = new URLSearchParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined) {
+        if (value !== undefined && value !== null) {
           queryParams.append(key, value.toString());
         }
       });
     }
     
-    return this.request(`/api/members?${queryParams.toString()}`);
+    const endpoint = `/api/members${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    return this.request(endpoint);
   }
 
   async getMember(id: string): Promise<ApiResponse> {
@@ -137,30 +176,25 @@ class ApiClient {
     });
   }
 
-  async getExpiringMembers(days: number = 30): Promise<ApiResponse> {
-    return this.request(`/api/members/expiring/soon?days=${days}`);
-  }
-
-  async checkInMember(id: string): Promise<ApiResponse> {
-    return this.request(`/api/members/${id}/checkin`, {
-      method: 'POST',
-    });
-  }
-
-  async renewMembership(id: string, data: any): Promise<ApiResponse> {
-    return this.request(`/api/members/${id}/renew`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  async getMemberStats(id: string): Promise<ApiResponse> {
-    return this.request(`/api/members/${id}/stats`);
-  }
-
   // Trainers
-  async getTrainers(): Promise<ApiResponse> {
-    return this.request('/api/trainers');
+  async getTrainers(params?: {
+    status?: string;
+    specialization?: string;
+    page?: number;
+    limit?: number;
+    search?: string;
+  }): Promise<ApiResponse> {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+    
+    const endpoint = `/api/trainers${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    return this.request(endpoint);
   }
 
   async getTrainer(id: string): Promise<ApiResponse> {
@@ -187,76 +221,25 @@ class ApiClient {
     });
   }
 
-  async checkInTrainer(id: string): Promise<ApiResponse> {
-    return this.request(`/api/trainers/${id}/checkin`, {
-      method: 'POST',
-    });
-  }
-
-  async checkOutTrainer(id: string): Promise<ApiResponse> {
-    return this.request(`/api/trainers/${id}/checkout`, {
-      method: 'POST',
-    });
-  }
-
-  // Visitors
-  async getVisitors(): Promise<ApiResponse> {
-    return this.request('/api/visitors');
-  }
-
-  async checkInVisitor(visitorData: any): Promise<ApiResponse> {
-    return this.request('/api/visitors/checkin', {
-      method: 'POST',
-      body: JSON.stringify(visitorData),
-    });
-  }
-
-  async checkOutVisitor(id: string): Promise<ApiResponse> {
-    return this.request(`/api/visitors/${id}/checkout`, {
-      method: 'POST',
-    });
-  }
-
-  // Invoices
-  async getInvoices(): Promise<ApiResponse> {
-    return this.request('/api/invoices');
-  }
-
-  async getInvoice(id: string): Promise<ApiResponse> {
-    return this.request(`/api/invoices/${id}`);
-  }
-
-  async createInvoice(invoiceData: any): Promise<ApiResponse> {
-    return this.request('/api/invoices', {
-      method: 'POST',
-      body: JSON.stringify(invoiceData),
-    });
-  }
-
-  async updateInvoice(id: string, invoiceData: any): Promise<ApiResponse> {
-    return this.request(`/api/invoices/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(invoiceData),
-    });
-  }
-
-  async deleteInvoice(id: string): Promise<ApiResponse> {
-    return this.request(`/api/invoices/${id}`, {
-      method: 'DELETE',
-    });
-  }
-
-  async getInvoiceStats(): Promise<ApiResponse> {
-    return this.request('/api/invoices/stats');
-  }
-
   // Sessions
-  async getSessions(): Promise<ApiResponse> {
-    return this.request('/api/sessions');
-  }
-
-  async getSession(id: string): Promise<ApiResponse> {
-    return this.request(`/api/sessions/${id}`);
+  async getSessions(params?: {
+    trainerId?: string;
+    status?: string;
+    date?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<ApiResponse> {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+    
+    const endpoint = `/api/sessions${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    return this.request(endpoint);
   }
 
   async createSession(sessionData: any): Promise<ApiResponse> {
@@ -279,20 +262,108 @@ class ApiClient {
     });
   }
 
-  async updateSessionStatus(id: string, status: string): Promise<ApiResponse> {
-    return this.request(`/api/sessions/${id}/status`, {
+  // Visitors
+  async getVisitors(params?: {
+    status?: string;
+    date?: string;
+    page?: number;
+    limit?: number;
+    search?: string;
+  }): Promise<ApiResponse> {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+    
+    const endpoint = `/api/visitors${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    return this.request(endpoint);
+  }
+
+  async createVisitor(visitorData: any): Promise<ApiResponse> {
+    return this.request('/api/visitors', {
+      method: 'POST',
+      body: JSON.stringify(visitorData),
+    });
+  }
+
+  async updateVisitor(id: string, visitorData: any): Promise<ApiResponse> {
+    return this.request(`/api/visitors/${id}`, {
       method: 'PUT',
-      body: JSON.stringify({ status }),
+      body: JSON.stringify(visitorData),
+    });
+  }
+
+  async deleteVisitor(id: string): Promise<ApiResponse> {
+    return this.request(`/api/visitors/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Invoices
+  async getInvoices(params?: {
+    status?: string;
+    memberId?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<ApiResponse> {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+    
+    const endpoint = `/api/invoices${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    return this.request(endpoint);
+  }
+
+  async createInvoice(invoiceData: any): Promise<ApiResponse> {
+    return this.request('/api/invoices', {
+      method: 'POST',
+      body: JSON.stringify(invoiceData),
+    });
+  }
+
+  async updateInvoice(id: string, invoiceData: any): Promise<ApiResponse> {
+    return this.request(`/api/invoices/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(invoiceData),
+    });
+  }
+
+  async deleteInvoice(id: string): Promise<ApiResponse> {
+    return this.request(`/api/invoices/${id}`, {
+      method: 'DELETE',
     });
   }
 
   // Follow-ups
-  async getFollowUps(): Promise<ApiResponse> {
-    return this.request('/api/followups');
-  }
-
-  async getFollowUp(id: string): Promise<ApiResponse> {
-    return this.request(`/api/followups/${id}`);
+  async getFollowUps(params?: {
+    status?: string;
+    memberId?: string;
+    type?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<ApiResponse> {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+    
+    const endpoint = `/api/followups${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    return this.request(endpoint);
   }
 
   async createFollowUp(followUpData: any): Promise<ApiResponse> {
@@ -315,20 +386,25 @@ class ApiClient {
     });
   }
 
-  async updateFollowUpStatus(id: string, status: string): Promise<ApiResponse> {
-    return this.request(`/api/followups/${id}/status`, {
-      method: 'PUT',
-      body: JSON.stringify({ status }),
-    });
-  }
-
-  async getPendingFollowUps(): Promise<ApiResponse> {
-    return this.request('/api/followups/pending');
-  }
-
   // Activities
-  async getActivities(): Promise<ApiResponse> {
-    return this.request('/api/activities');
+  async getActivities(params?: {
+    type?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<ApiResponse> {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+    
+    const endpoint = `/api/activities${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    return this.request(endpoint);
   }
 
   async createActivity(activityData: any): Promise<ApiResponse> {
@@ -371,6 +447,10 @@ class ApiClient {
     this.token = null;
     localStorage.removeItem('auth_token');
   }
+
+  isBackendAvailable(): boolean {
+    return this.isOnline;
+  }
 }
 
 // Create and export the API client instance
@@ -382,7 +462,9 @@ export type { ApiResponse, ApiError };
 // Utility function to check if backend is available
 export const checkBackendAvailability = async (): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/health`);
+    const response = await fetch(`${API_BASE_URL}/health`, {
+      signal: AbortSignal.timeout(5000)
+    });
     return response.ok;
   } catch (error) {
     console.warn('Backend not available:', error);

@@ -1,10 +1,11 @@
  import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { User, LoginCredentials, AuthState, authenticateUser } from '@/lib/auth';
+import { User, LoginCredentials, AuthState, authenticateUser, updateUserProfile } from '@/lib/auth';
 import { apiClient, checkBackendAvailability } from '@/lib/api';
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<boolean>;
   logout: () => void;
+  updateUser: (user: User) => void;
   isBackendAvailable: boolean;
 }
 
@@ -15,6 +16,7 @@ type AuthAction =
   | { type: 'LOGIN_SUCCESS'; payload: User }
   | { type: 'LOGIN_FAILURE' }
   | { type: 'LOGOUT' }
+  | { type: 'UPDATE_USER'; payload: User }
   | { type: 'SET_BACKEND_AVAILABLE'; payload: boolean };
 
 const authReducer = (state: AuthState & { isBackendAvailable: boolean }, action: AuthAction): AuthState & { isBackendAvailable: boolean } => {
@@ -67,6 +69,12 @@ const authReducer = (state: AuthState & { isBackendAvailable: boolean }, action:
       return {
         ...state,
         isBackendAvailable: action.payload,
+      };
+    case 'UPDATE_USER':
+      console.log('👤 Updating user:', action.payload.name);
+      return {
+        ...state,
+        user: action.payload,
       };
     default:
       return state;
@@ -194,10 +202,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateUser = (updatedUser: User) => {
+    // Update the user in the global auth system
+    if (updatedUser.id) {
+      const result = updateUserProfile(updatedUser.id, updatedUser);
+      if (result) {
+        // Update the context state
+        dispatch({ type: 'UPDATE_USER', payload: result });
+        console.log('✅ User profile updated successfully:', result.name);
+      }
+    }
+  };
+
   const value: AuthContextType = {
     ...state,
     login,
     logout,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -24,8 +24,8 @@ export interface AuthState {
 export const sampleUsers: User[] = [
   {
     id: '1',
-    username: 'owner',
-    email: 'owner@tristarfitness.com',
+    username: 'nikhil',
+    email: 'nikhil@tristarfitness.com',
     role: 'owner',
     name: 'Nikhil Verma',
     phone: '+91 98765 43210',
@@ -64,10 +64,10 @@ export const sampleUsers: User[] = [
   },
   {
     id: '5',
-    username: 'nikhil',
-    email: 'nikhil@tristarfitness.com',
-    role: 'semi-admin',
-    name: 'Nikhil',
+    username: 'owner',
+    email: 'owner@tristarfitness.com',
+    role: 'owner',
+    name: 'Nikhil Verma',
     phone: '+91 98765 43213',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
@@ -87,16 +87,19 @@ export const sampleUsers: User[] = [
 // Simple password storage (in real app, use proper hashing)
 const userPasswords: Record<string, string> = {
   'owner': 'demo123',
+  'nikhil': 'demo123',
   'yash': 'demo123',
   'mohit': 'demo123',
   'palak': 'demo123',
-  'nikhil': 'demo123',
   'raj': 'demo123',
 };
 
+// Global user data store for profile updates
+let currentUserData: User[] = [...sampleUsers];
+
 // Authentication functions
 export const authenticateUser = (credentials: LoginCredentials): User | null => {
-  const user = sampleUsers.find(u => u.username === credentials.username);
+  const user = currentUserData.find(u => u.username === credentials.username);
   
   if (user && userPasswords[credentials.username] === credentials.password) {
     // Update last login
@@ -108,7 +111,24 @@ export const authenticateUser = (credentials: LoginCredentials): User | null => 
 };
 
 export const getUserById = (id: string): User | null => {
-  return sampleUsers.find(u => u.id === id) || null;
+  return currentUserData.find(u => u.id === id) || null;
+};
+
+export const updateUserProfile = (userId: string, updates: Partial<User>): User | null => {
+  const userIndex = currentUserData.findIndex(u => u.id === userId);
+  if (userIndex === -1) return null;
+  
+  // Update the user data
+  currentUserData[userIndex] = { ...currentUserData[userIndex], ...updates };
+  
+  // Update localStorage
+  localStorage.setItem('tristar_fitness_user', JSON.stringify(currentUserData[userIndex]));
+  
+  return currentUserData[userIndex];
+};
+
+export const getUserByUsername = (username: string): User | null => {
+  return currentUserData.find(u => u.username === username) || null;
 };
 
 export const isOwner = (user: User | null): boolean => {

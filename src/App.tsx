@@ -41,7 +41,7 @@ function App() {
               <ProtectedRoute>
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-4 py-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <Dashboard />
                   </main>
                 </>
@@ -52,7 +52,7 @@ function App() {
               <ProtectedRoute>
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-4 py-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <Dashboard />
                   </main>
                 </>
@@ -63,7 +63,7 @@ function App() {
               <ProtectedRoute requiredRole="owner">
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-4 py-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <Members />
                   </main>
                 </>
@@ -74,7 +74,7 @@ function App() {
               <ProtectedRoute requiredRole="owner">
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-4 py-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <AddMember />
                   </main>
                 </>
@@ -85,7 +85,7 @@ function App() {
               <ProtectedRoute requiredRole="owner">
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-4 py-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <EditMember />
                   </main>
                 </>
@@ -96,7 +96,7 @@ function App() {
               <ProtectedRoute>
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-4 py-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <Visitors />
                   </main>
                 </>
@@ -107,7 +107,7 @@ function App() {
               <ProtectedRoute>
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-4 py-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <Trainers />
                   </main>
                 </>
@@ -118,7 +118,7 @@ function App() {
               <ProtectedRoute>
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-4 py-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <Profile />
                   </main>
                 </>
@@ -129,7 +129,7 @@ function App() {
               <ProtectedRoute requiredRole="owner">
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-4 py-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <Invoices />
                   </main>
                 </>
@@ -140,7 +140,7 @@ function App() {
               <ProtectedRoute requiredRole="owner">
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-4 py-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <DataManagement />
                   </main>
                 </>
@@ -151,8 +151,19 @@ function App() {
               <ProtectedRoute>
                 <>
                   <Navigation />
-                  <main className="container mx-auto px-8">
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <FollowUp />
+                  </main>
+                </>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/debug" element={
+              <ProtectedRoute requiredRole="owner">
+                <>
+                  <Navigation />
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
+                    <Debug />
                   </main>
                 </>
               </ProtectedRoute>
@@ -162,25 +173,20 @@ function App() {
               <ProtectedRoute>
                 <>
                   <Navigation />
-                  <main>
+                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <AuthTest />
                   </main>
                 </>
               </ProtectedRoute>
             } />
             
-            <Route path="/debug" element={
-              <>
-                <Debug />
-              </>
-            } />
-            
+            {/* 404 Route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster />
-        </div>
-      </Router>
-    </AuthProvider>
+          </div>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   )
 }

@@ -31,24 +31,25 @@ const Navigation = () => {
   ]
 
   return (
-    <nav className="nav-enhanced bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm backdrop-blur-sm">
-      <div className="container mx-auto px-4">
+    <nav className="nav-enhanced sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center space-x-2 group relative">
-              <div className="bg-tristar-600 p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg">
+          {/* Logo and Brand */}
+          <div className="flex items-center space-x-4">
+            <Link to="/dashboard" className="flex items-center space-x-2 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-tristar-500 to-tristar-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
                 <Dumbbell className="h-6 w-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">TriStar</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Fitness & Wellness</p>
-              </div>
-              {/* Hover tooltip with credits */}
-              <div className="absolute -bottom-8 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <div className="bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                  Made by Nishchay Gupta
-                </div>
+              <div className="text-left">
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-tristar-600 dark:group-hover:text-tristar-400 transition-colors duration-200">
+                  TriStar
+                </h1>
+                <p className="text-xs text-gray-600 dark:text-gray-400 -mt-1">
+                  Fitness & Wellness
+                </p>
               </div>
             </Link>
+          </div>
           
           <div className="flex items-center space-x-4">
             {/* Navigation Items */}
@@ -90,7 +91,7 @@ const Navigation = () => {
               variant="ghost"
               size="sm"
               onClick={toggleTheme}
-              className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+              className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>

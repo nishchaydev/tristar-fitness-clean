@@ -81,6 +81,37 @@
   .dark .bg-gray-100 {
     @apply bg-gray-900;
   }
+
+  /* Prevent white flash during theme loading */
+  html {
+    @apply transition-colors duration-200;
+  }
+
+  /* Mobile-specific styles */
+  @media (max-width: 640px) {
+    .container {
+      @apply px-4;
+    }
+    
+    .nav-enhanced {
+      @apply px-2;
+    }
+    
+    .nav-enhanced .nav-item {
+      @apply text-sm px-2 py-1;
+    }
+    
+    .nav-enhanced .nav-item span {
+      @apply hidden sm:inline;
+    }
+  }
+
+  /* Tablet-specific styles */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .container {
+      @apply px-6;
+    }
+  }
 }
 
 @layer base {
@@ -91,6 +122,8 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -125,6 +158,8 @@
 @layer components {
   .nav-enhanced {
     @apply shadow-sm backdrop-blur-sm bg-white/95 dark:bg-gray-900/95 border-b border-gray-200 dark:border-gray-800;
+    /* Ensure smooth theme transitions */
+    @apply transition-all duration-200;
   }
 
   .nav-enhanced .nav-item {
@@ -167,48 +202,34 @@
     @apply bg-danger-light text-white px-2 py-1 rounded-full text-xs font-medium;
   }
 
-  .status-pending {
-    @apply bg-warning-light text-white px-2 py-1 rounded-full text-xs font-medium;
+  /* Mobile responsive utilities */
+  .mobile-hidden {
+    @apply hidden sm:block;
   }
 
-  .input-field {
-    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-tristar-500 focus:border-transparent dark:bg-gray-800 dark:text-white transition-colors duration-200;
+  .mobile-only {
+    @apply block sm:hidden;
   }
 
-  .table-container {
-    @apply overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700;
+  .tablet-hidden {
+    @apply hidden md:block;
   }
 
-  .table {
-    @apply min-w-full divide-y divide-gray-200 dark:divide-gray-700;
+  .tablet-only {
+    @apply block md:hidden;
   }
 
-  .table-header {
-    @apply bg-gray-50 dark:bg-gray-900;
-  }
-
-  .table-header-cell {
-    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider;
-  }
-
-  .table-body {
-    @apply bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700;
-  }
-
-  .table-cell {
-    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100;
-  }
-
-  .loading-spinner {
-    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-tristar-600;
-  }
-
-  .fade-in {
-    @apply animate-fade-in;
-  }
-
-  .slide-up {
-    @apply animate-slide-up;
+  /* Touch-friendly button sizes for mobile */
+  @media (max-width: 640px) {
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+      @apply py-3 px-6 text-base;
+    }
+    
+    .nav-item {
+      @apply py-2 px-3;
+    }
   }
 }
 

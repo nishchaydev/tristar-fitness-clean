@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useNavigate, Link } from 'react-router-dom'
 
 const Profile = () => {
-  const { user, logout } = useAuth()
+  const { user, logout, updateUser } = useAuth()
   const { toast } = useToast()
   const navigate = useNavigate()
   const [isEditing, setIsEditing] = useState(false)
@@ -37,6 +37,18 @@ const Profile = () => {
     role: 'trainer' as 'trainer' | 'senior_trainer' | 'assistant_trainer'
   })
 
+  // Update profile data when user changes
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        username: user.username || ''
+      })
+    }
+  }, [user])
+
   if (!user) {
     navigate('/login')
     return null
@@ -52,7 +64,22 @@ const Profile = () => {
       return
     }
 
-    // In a real app, this would update the user profile via API
+    // Update the user in context and localStorage
+    const updatedUser = {
+      ...user,
+      name: profileData.name,
+      email: profileData.email,
+      phone: profileData.phone
+    }
+
+    // Update in context
+    if (updateUser) {
+      updateUser(updatedUser)
+    }
+
+    // Update in localStorage
+    localStorage.setItem('tristar_fitness_user', JSON.stringify(updatedUser))
+
     toast({
       title: "Profile Updated",
       description: "Your profile has been updated successfully!",
@@ -216,9 +243,9 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
@@ -226,23 +253,23 @@ const Profile = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate(-1)}
-                className="text-gray-600 hover:text-gray-900"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
               >
                 <ArrowLeft className="h-5 w-5 mr-2" />
-                Back
+                <span className="hidden sm:inline">Back</span>
               </Button>
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <User className="h-5 w-5 text-green-600" />
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                  <User className="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-semibold text-gray-900">Profile Management</h1>
-                  <p className="text-sm text-gray-600">Manage your account settings</p>
+                  <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Profile Management</h1>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">Manage your account settings</p>
                 </div>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-500">Role: {user.role}</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline">Role: {user.role}</span>
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             </div>
           </div>
@@ -250,11 +277,11 @@ const Profile = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="space-y-4 sm:space-y-6">
           {/* Profile Information */}
           <Card className="profile-section bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between border-b border-gray-200 dark:border-gray-600">
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 dark:border-gray-600 space-y-2 sm:space-y-0">
               <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white">
                 <div className="w-8 h-8 bg-gradient-to-br from-tristar-500 to-tristar-600 rounded-full flex items-center justify-center">
                   <User className="h-4 w-4 text-white" />
@@ -265,13 +292,13 @@ const Profile = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsEditing(!isEditing)}
-                className="hover:bg-tristar-50 hover:text-tristar-700 hover:border-tristar-300 dark:hover:bg-tristar-900/30 dark:hover:text-tristar-300 transition-all duration-200"
+                className="hover:bg-tristar-50 hover:text-tristar-700 hover:border-tristar-300 dark:hover:bg-tristar-900/30 dark:hover:text-tristar-300 transition-all duration-200 w-full sm:w-auto"
               >
                 <Edit className="h-4 w-4 mr-2" />
                 {isEditing ? 'Cancel' : 'Edit'}
               </Button>
             </CardHeader>
-            <CardContent className="space-y-4 p-6">
+            <CardContent className="space-y-4 p-4 sm:p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="name" className="text-gray-700 dark:text-gray-300 font-medium">Full Name</Label>
@@ -316,12 +343,12 @@ const Profile = () => {
                   />
                 </div>
               </div>
-              {isEditing && (
-                <Button onClick={handleSaveProfile} className="btn-primary bg-tristar-600 hover:bg-tristar-700 hover:scale-105 transition-transform duration-200">
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Changes
-                </Button>
-              )}
+                              {isEditing && (
+                  <Button onClick={handleSaveProfile} className="btn-primary bg-tristar-600 hover:bg-tristar-700 hover:scale-105 transition-transform duration-200 w-full sm:w-auto">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Changes
+                  </Button>
+                )}
             </CardContent>
           </Card>
 
@@ -335,7 +362,7 @@ const Profile = () => {
                 <span>Change Password</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 p-6">
+            <CardContent className="space-y-4 p-4 sm:p-6">
               <div>
                 <Label htmlFor="currentPassword" className="text-gray-700 dark:text-gray-300 font-medium">Current Password</Label>
                 <div className="relative">
@@ -379,7 +406,7 @@ const Profile = () => {
                   />
                 </div>
               </div>
-              <Button onClick={handleChangePassword} className="btn-secondary bg-blue-600 hover:bg-blue-700 hover:scale-105 transition-transform duration-200">
+              <Button onClick={handleChangePassword} className="btn-secondary bg-blue-600 hover:bg-blue-700 hover:scale-105 transition-transform duration-200 w-full sm:w-auto">
                 <Key className="h-4 w-4 mr-2" />
                 Change Password
               </Button>
