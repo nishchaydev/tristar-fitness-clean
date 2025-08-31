@@ -46,22 +46,9 @@ const Members = () => {
   }
 
   const renewMembership = (memberId: string) => {
-    setMembers(members.map(member => {
-      if (member.id === memberId) {
-        const newExpiryDate = new Date(member.expiryDate)
-        newExpiryDate.setMonth(newExpiryDate.getMonth() + 1)
-        
-        return {
-          ...member,
-          expiryDate: newExpiryDate.toISOString().split('T')[0],
-          status: 'active' as const
-        }
-      }
-      return member
-    }))
-    
     const member = members.find(m => m.id === memberId)
     if (member) {
+      // In a real app, this would call an API to update the membership
       toast({
         title: "Membership Renewed",
         description: `${member.name}'s membership has been renewed successfully!`,

@@ -143,7 +143,7 @@ const Login = () => {
                                    <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => quickLogin('owner', 'owner123')}
+                    onClick={() => quickLogin('owner', 'demo123')}
                     className="text-xs"
                   >
                     🏢 Nikhil Verma - Gym Owner (Full Access)
@@ -151,7 +151,7 @@ const Login = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => quickLogin('trainer1', 'trainer123')}
+                    onClick={() => quickLogin('trainer1', 'demo123')}
                     className="text-xs"
                   >
                     🏋️‍♂️ Yash - Trainer (Limited Access)
@@ -159,7 +159,7 @@ const Login = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => quickLogin('trainer2', 'trainer123')}
+                    onClick={() => quickLogin('trainer2', 'demo123')}
                     className="text-xs"
                   >
                     🏋️‍♂️ Mohit Sen - Trainer (Limited Access)
@@ -167,10 +167,18 @@ const Login = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => quickLogin('trainer3', 'trainer123')}
+                    onClick={() => quickLogin('trainer3', 'demo123')}
                     className="text-xs"
                   >
                     🏋️‍♀️ Palak Dubey - Trainer (Limited Access)
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => quickLogin('semi-admin1', 'demo123')}
+                    className="text-xs"
+                  >
+                    👨‍💼 Raj Kumar - Semi Admin (Follow-up Access)
                   </Button>
                </div>
              </div>

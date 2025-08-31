@@ -12,7 +12,10 @@ import {
   IndianRupee,
   Clock,
   CheckCircle,
-  Clock3
+  Clock3,
+  Database,
+  MessageSquare,
+  RefreshCw
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { format, parseISO, formatDistanceToNow } from 'date-fns'
@@ -43,17 +46,37 @@ const Dashboard = () => {
     addFollowUp,
     updateFollowUp,
     addActivity,
-    debugStore
+    initializeDemoData
   } = useDataStore()
   
+  // Calculate real-time stats
+  const paidInvoices = invoices.filter(i => i.status === 'paid')
+  const monthlyRevenue = paidInvoices.reduce((sum, i) => sum + i.total, 0)
+  
+  // Get current month's revenue
+  const currentMonth = new Date().getMonth()
+  const currentYear = new Date().getFullYear()
+  const monthlyRevenueData = paidInvoices.filter(invoice => {
+    const invoiceDate = new Date(invoice.createdAt)
+    return invoiceDate.getMonth() === currentMonth && invoiceDate.getFullYear() === currentYear
+  })
+  const currentMonthRevenue = monthlyRevenueData.reduce((sum, i) => sum + i.total, 0)
+
   // Debug: Log store state on component mount
   React.useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('Dashboard Data Store State:', debugStore())
+      console.log('Dashboard Data Store State:', {
+        members: members.length,
+        trainers: trainers.length,
+        visitors: visitors.length,
+        invoices: invoices.length,
+        followUps: followUps.length,
+        activities: activities.length,
+        monthlyRevenue: monthlyRevenue
+      })
     }
-  }, [debugStore])
+  }, [members.length, trainers.length, visitors.length, invoices.length, followUps.length, activities.length, monthlyRevenue])
   
-  // Calculate real-time stats
   const stats = {
     totalMembers: members.length,
     activeMembers: members.filter(m => m.status === 'active').length,
@@ -61,7 +84,7 @@ const Dashboard = () => {
     totalVisitors: visitors.filter(v => v.status === 'checked-in').length,
     checkedInTrainers: trainers.filter(t => t.status === 'available' || t.status === 'busy').length,
     totalTrainers: trainers.length,
-    monthlyRevenue: invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + i.total, 0),
+    monthlyRevenue: monthlyRevenue,
     pendingInvoices: invoices.filter(i => i.status === 'pending').length,
     pendingFollowUps: getPendingFollowUps().length
   }
@@ -162,8 +185,8 @@ const Dashboard = () => {
     <div className="space-y-6">
       {/* Debug Info - Remove in production */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-sm text-blue-800">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
             <strong>Debug Info:</strong> Members: {members.length} | 
             Trainers: {trainers.length} | 
             Visitors: {visitors.length} | 
@@ -177,10 +200,21 @@ const Dashboard = () => {
       
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400">
             Welcome back, {user?.name}! {isOwner(user) ? 'You have full access to all features.' : 'You have limited access to trainer features.'}
           </p>
+          <div className="mt-2">
+            <Button
+              onClick={() => initializeDemoData()}
+              variant="outline"
+              size="sm"
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Load Demo Data
+            </Button>
+          </div>
         </div>
         <div className="flex space-x-2">
           {isOwner(user) && (
@@ -195,78 +229,78 @@ const Dashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Link to="/members" className="block">
-          <Card className="stat-card card-hover">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <Link to="/members" className="block group">
+          <Card className="stat-card card-hover bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow-lg group-hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Members</CardTitle>
-              <Users className="h-4 w-4 text-green-600" />
+              <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">Total Members</CardTitle>
+              <Users className="h-4 w-4 text-green-600 dark:text-green-400" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gradient">{stats.totalMembers}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+12</span> from last month
+            <CardContent className="pt-2">
+              <div className="text-3xl font-bold text-gray-900 dark:text-white leading-tight">{stats.totalMembers}</div>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                <span className="text-green-600 dark:text-green-400 font-medium">+12</span> from last month
               </p>
             </CardContent>
           </Card>
         </Link>
 
-        <Link to="/members" className="block">
-          <Card className="stat-card card-hover">
+        <Link to="/members" className="block group">
+          <Card className="stat-card card-hover bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow-lg group-hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Members</CardTitle>
-              <TrendingUp className="h-4 w-4 text-green-600" />
+              <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">Active Members</CardTitle>
+              <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gradient">{stats.activeMembers}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">94.7%</span> retention rate
+            <CardContent className="pt-2">
+              <div className="text-3xl font-bold text-gray-900 dark:text-white leading-tight">{stats.activeMembers}</div>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                <span className="text-green-600 dark:text-green-400 font-medium">94.7%</span> retention rate
               </p>
             </CardContent>
           </Card>
         </Link>
 
-        <Link to="/visitors" className="block">
-          <Card className="stat-card card-hover">
+        <Link to="/visitors" className="block group">
+          <Card className="stat-card card-hover bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow-lg group-hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Visitors Today</CardTitle>
-              <UserCheck className="h-4 w-4 text-blue-600" />
+              <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">Visitors Today</CardTitle>
+              <UserCheck className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gradient">{stats.totalVisitors}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-blue-600">+5</span> from yesterday
+            <CardContent className="pt-2">
+              <div className="text-3xl font-bold text-gray-900 dark:text-white leading-tight">{stats.totalVisitors}</div>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                <span className="text-blue-600 dark:text-blue-400 font-medium">+5</span> from yesterday
               </p>
             </CardContent>
           </Card>
         </Link>
 
         {isOwner(user) ? (
-          <Link to="/invoices" className="block">
-            <Card className="stat-card card-hover">
+          <Link to="/invoices" className="block group">
+            <Card className="stat-card card-hover bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow-lg group-hover:scale-105">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-                <IndianRupee className="h-4 w-4 text-green-600" />
+                <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">Monthly Revenue</CardTitle>
+                <IndianRupee className="h-4 w-4 text-green-600 dark:text-green-400" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gradient">{formatINR(stats.monthlyRevenue)}</div>
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-green-600">+8.2%</span> from last month
+              <CardContent className="pt-2">
+                <div className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">{formatINR(currentMonthRevenue)}</div>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                  <span className="text-green-600 dark:text-green-400 font-medium">+8.2%</span> from last month
                 </p>
               </CardContent>
             </Card>
           </Link>
         ) : (
-          <Link to="/trainers" className="block">
-            <Card className="stat-card card-hover">
+          <Link to="/trainers" className="block group">
+            <Card className="stat-card card-hover bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow-lg group-hover:scale-105">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Today's Sessions</CardTitle>
-                <UserCog className="h-4 w-4 text-purple-600" />
+                <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">Today's Sessions</CardTitle>
+                <UserCog className="h-4 w-4 text-purple-600 dark:text-purple-400" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gradient">8</div>
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-purple-600">+2</span> from yesterday
+              <CardContent className="pt-2">
+                <div className="text-3xl font-bold text-gray-900 dark:text-white leading-tight">8</div>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                  <span className="text-purple-600 dark:text-purple-400 font-medium">+2</span> from yesterday
                 </p>
               </CardContent>
             </Card>
@@ -277,9 +311,9 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Expiring Memberships Alert - Owner Only */}
         {isOwner(user) && (
-          <Card>
+          <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white">
                 <AlertTriangle className="h-5 w-5 text-orange-500" />
                 <span>Expiring Memberships</span>
                 <Badge variant="destructive">{stats.expiringMembers}</Badge>
@@ -288,10 +322,10 @@ const Dashboard = () => {
             <CardContent>
               <div className="space-y-3">
                 {expiringMembers.map((member) => (
-                  <div key={member.id} className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                  <div key={member.id} className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/30 rounded-lg">
                     <div>
-                      <p className="font-medium">{member.name}</p>
-                      <p className="text-sm text-gray-600">Expires: {format(parseISO(member.expiryDate), 'dd MMM yyyy')}</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{member.name}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Expires: {format(parseISO(member.expiryDate), 'dd MMM yyyy')}</p>
                     </div>
                     <div className="flex space-x-2">
                       <Button 
@@ -324,9 +358,9 @@ const Dashboard = () => {
         )}
 
         {/* Recent Activity */}
-        <Card>
+        <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
+            <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white">
               <span>Recent Activity</span>
               <Badge variant="secondary">{recentActivities.length}</Badge>
             </CardTitle>
@@ -341,8 +375,8 @@ const Dashboard = () => {
                   }
                   return true
                 })
-                .map((activity) => (
-                  <div key={activity.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                .map((activity, index) => (
+                  <div key={`${activity.id}-${index}`} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <div className="flex-shrink-0">
                       {activity.type === 'member' && <Users className="h-5 w-5 text-green-600" />}
                       {activity.type === 'visitor' && <UserCheck className="h-5 w-5 text-blue-600" />}
@@ -351,19 +385,19 @@ const Dashboard = () => {
                       {activity.type === 'followup' && <Clock className="h-5 w-5 text-yellow-600" />}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium">{activity.action}</p>
-                      <p className="text-xs text-gray-600">{activity.name}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{activity.action}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{activity.name}</p>
                       {activity.details && (
-                        <p className="text-xs text-gray-500">{activity.details}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-500">{activity.details}</p>
                       )}
                     </div>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
                       {formatDistanceToNow(parseISO(activity.time), { addSuffix: true })}
                     </span>
                   </div>
                 ))}
               {recentActivities.length === 0 && (
-                <p className="text-gray-500 text-center py-4">No recent activity</p>
+                <p className="text-gray-500 dark:text-gray-400 text-center py-4">No recent activity</p>
               )}
             </div>
           </CardContent>
@@ -372,9 +406,9 @@ const Dashboard = () => {
 
       {/* Follow-ups Section - Owner Only */}
       {isOwner(user) && stats.pendingFollowUps > 0 && (
-        <Card>
+        <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
+            <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white">
               <Clock className="h-5 w-5 text-yellow-500" />
               <span>Pending Follow-ups</span>
               <Badge variant="secondary">{stats.pendingFollowUps}</Badge>
@@ -382,12 +416,12 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {getPendingFollowUps().slice(0, 5).map((followUp) => (
-                <div key={followUp.id} className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+              {getPendingFollowUps().slice(0, 5).map((followUp, index) => (
+                <div key={`${followUp.id}-${index}`} className="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg">
                   <div>
-                    <p className="font-medium">{followUp.memberName}</p>
-                    <p className="text-sm text-gray-600">{followUp.notes}</p>
-                    <p className="text-xs text-gray-500">Due: {format(parseISO(followUp.dueDate), 'dd MMM yyyy')}</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{followUp.memberName}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{followUp.notes}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-500">Due: {format(parseISO(followUp.dueDate), 'dd MMM yyyy')}</p>
                   </div>
                   <div className="flex space-x-2">
                                           <Button
@@ -415,27 +449,27 @@ const Dashboard = () => {
       )}
 
       {/* Quick Actions */}
-      <Card>
+      <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
+          <CardTitle className="text-gray-900 dark:text-white">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Link to="/visitors">
-              <Button variant="outline" className="w-full h-20 flex flex-col space-y-2">
+              <Button variant="outline" className="w-full h-20 flex flex-col space-y-2 hover:scale-105 transition-transform duration-200">
                 <UserCheck className="h-6 w-6 text-blue-600" />
                 <span>Scan Visitor QR</span>
               </Button>
             </Link>
             <Link to="/trainers">
-              <Button variant="outline" className="w-full h-20 flex flex-col space-y-2">
+              <Button variant="outline" className="w-full h-20 flex flex-col space-y-2 hover:scale-105 transition-transform duration-200">
                 <UserCog className="h-6 w-6 text-purple-600" />
                 <span>{isOwner(user) ? 'Trainer Check-in' : 'My Schedule'}</span>
               </Button>
             </Link>
             {isOwner(user) && (
               <Link to="/invoices">
-                <Button variant="outline" className="w-full h-20 flex flex-col space-y-2">
+                <Button variant="outline" className="w-full h-20 flex flex-col space-y-2 hover:scale-105 transition-transform duration-200">
                   <FileText className="h-6 w-6 text-orange-600" />
                   <span>Generate Invoice</span>
                 </Button>
@@ -443,7 +477,7 @@ const Dashboard = () => {
             )}
             {isOwner(user) && (
               <Link to="/add-member">
-                <Button variant="outline" className="w-full h-20 flex flex-col space-y-2">
+                <Button variant="outline" className="w-full h-20 flex flex-col space-y-2 hover:scale-105 transition-transform duration-200">
                   <Users className="h-6 w-6 text-green-600" />
                   <span>Add Member</span>
                 </Button>
@@ -452,6 +486,40 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Data Management Section - Owner Only */}
+      {isOwner(user) && (
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white">
+              <Database className="h-5 w-5 text-indigo-600" />
+              <span>Data Management</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link to="/data-management">
+                <Button variant="outline" className="w-full h-16 flex flex-col space-y-2 hover:scale-105 transition-transform duration-200">
+                  <Database className="h-5 w-5 text-indigo-600" />
+                  <span className="text-sm">Export Data</span>
+                </Button>
+              </Link>
+              <Link to="/members">
+                <Button variant="outline" className="w-full h-16 flex flex-col space-y-2 hover:scale-105 transition-transform duration-200">
+                  <Users className="h-5 w-5 text-green-600" />
+                  <span className="text-sm">Manage Members</span>
+                </Button>
+              </Link>
+              <Link to="/followup">
+                <Button variant="outline" className="w-full h-16 flex flex-col space-y-2 hover:scale-105 transition-transform duration-200">
+                  <MessageSquare className="h-5 w-5 text-yellow-600" />
+                  <span className="text-sm">Follow-ups</span>
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

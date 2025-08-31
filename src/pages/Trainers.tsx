@@ -7,7 +7,7 @@ import { UserCog, Clock, LogOut, MapPin, Calendar, Users, TrendingUp, Plus, Edit
 import { useState } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
-import { isOwner } from '@/lib/auth'
+import { isOwner, isSemiAdmin } from '@/lib/auth'
 import { useDataStore } from '@/lib/dataSync'
 
 interface Trainer {
@@ -65,16 +65,10 @@ const Trainers = () => {
         return t.name === user?.name
       })
   
-  const filteredSessions = isOwner(user)
+  // All trainers can see each other's schedules, but only owners can see all data
+  const filteredSessions = isOwner(user) || isSemiAdmin(user)
     ? sessions
-    : sessions.filter(s => {
-        // Match by username or by name
-        if (user?.username === 'yash' && s.trainerName === 'Yash') return true
-        if (user?.username === 'mohit' && s.trainerName === 'Mohit Sen') return true
-        if (user?.username === 'palak' && s.trainerName === 'Palak Dubey') return true
-        if (user?.username === 'nikhil') return true
-        return s.trainerName === user?.name
-      })
+    : sessions // Trainers can see all sessions for schedule coordination
 
   const [showCheckInForm, setShowCheckInForm] = useState(false)
   const [selectedTrainer, setSelectedTrainer] = useState('')
@@ -429,8 +423,8 @@ const Trainers = () => {
         </Card>
       </div>
 
-      {/* Add Trainer Form - Owner Only */}
-      {showAddTrainerForm && isOwner(user) && (
+      {/* Add/Edit Trainer Form - Owner Only */}
+      {(showAddTrainerForm || editingTrainer) && isOwner(user) && (
         <Card>
           <CardHeader>
             <CardTitle>{editingTrainer ? 'Edit Trainer' : 'Add New Trainer'}</CardTitle>
@@ -601,7 +595,7 @@ const Trainers = () => {
                       <p className="text-sm text-gray-600">{trainer.specialization}</p>
                       <p className="text-xs text-gray-500">{trainer.email}</p>
                       <p className="text-xs text-blue-600">
-                        Sessions today: {trainer.totalSessions} | Salary: ₹{trainer.salary.toLocaleString()}
+                        Sessions today: {trainer.totalSessions} {isOwner(user) && `| Salary: ₹${trainer.salary.toLocaleString()}`}
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -611,6 +605,7 @@ const Trainers = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => startEditTrainer(trainer)}
+                            className="hover:bg-tristar-50 hover:text-tristar-700 hover:border-tristar-300 transition-all duration-200"
                           >
                             <Edit className="h-4 w-4 mr-1" />
                             Edit
@@ -654,7 +649,7 @@ const Trainers = () => {
                       <p className="text-sm text-gray-600">{trainer.specialization}</p>
                       <p className="text-xs text-gray-500">{trainer.email}</p>
                       <p className="text-xs text-orange-600">
-                        Active sessions: {trainer.currentSessions} | Salary: ₹{trainer.salary.toLocaleString()}
+                        Active sessions: {trainer.currentSessions} {isOwner(user) && `| Salary: ₹${trainer.salary.toLocaleString()}`}
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -664,6 +659,7 @@ const Trainers = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => startEditTrainer(trainer)}
+                            className="hover:bg-tristar-50 hover:text-tristar-700 hover:border-tristar-300 transition-all duration-200"
                           >
                             <Edit className="h-4 w-4 mr-1" />
                             Edit

@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import React from 'react'
 
 // Data interfaces
 export interface Member {
@@ -149,6 +150,11 @@ interface DataStore {
   getTotalRevenue: () => number
   getPendingFollowUps: () => FollowUp[]
   getRecentActivities: (limit?: number) => Activity[]
+  
+  // Data management functions
+  clearAllData: () => void
+  importData: (data: any) => void
+  initializeDemoData: () => void
 }
 
 // Initial data
@@ -214,6 +220,45 @@ const initialMembers: Member[] = [
     expiryDate: '2024-02-15',
     status: 'pending',
     totalVisits: 0
+  },
+  {
+    id: '6',
+    name: 'Sneha Verma',
+    email: 'sneha.verma@email.com',
+    phone: '+91 98765 43216',
+    membershipType: 'quarterly',
+    startDate: '2024-01-10',
+    expiryDate: '2024-04-10',
+    status: 'active',
+    lastVisit: '2024-01-16T14:20:00',
+    totalVisits: 15,
+    assignedTrainer: '3'
+  },
+  {
+    id: '7',
+    name: 'Vikram Singh',
+    email: 'vikram.singh@email.com',
+    phone: '+91 98765 43217',
+    membershipType: 'annual',
+    startDate: '2023-11-01',
+    expiryDate: '2024-11-01',
+    status: 'active',
+    lastVisit: '2024-01-17T08:45:00',
+    totalVisits: 42,
+    assignedTrainer: '1'
+  },
+  {
+    id: '8',
+    name: 'Anjali Desai',
+    email: 'anjali.desai@email.com',
+    phone: '+91 98765 43218',
+    membershipType: 'monthly',
+    startDate: '2024-01-20',
+    expiryDate: '2024-02-20',
+    status: 'active',
+    lastVisit: '2024-01-18T16:30:00',
+    totalVisits: 3,
+    assignedTrainer: '2'
   }
 ]
 
@@ -223,7 +268,7 @@ const initialTrainers: Trainer[] = [
     name: 'Yash',
     phone: '+91 98765 43210',
     email: 'yash@tristarfitness.com',
-    specialization: 'Weight Training',
+    specialization: 'Weight Training & Bodybuilding',
     status: 'available',
     currentSessions: 0,
     totalSessions: 8,
@@ -253,6 +298,18 @@ const initialTrainers: Trainer[] = [
     totalSessions: 5,
     joinDate: '2023-09-01',
     salary: 20000
+  },
+  {
+    id: '4',
+    name: 'Arjun Mehta',
+    phone: '+91 98765 43219',
+    email: 'arjun@tristarfitness.com',
+    specialization: 'CrossFit & Functional Training',
+    status: 'available',
+    currentSessions: 0,
+    totalSessions: 12,
+    joinDate: '2023-07-01',
+    salary: 28000
   }
 ]
 
@@ -265,6 +322,34 @@ const initialSessions: Session[] = [
     startTime: '2024-01-15T10:00:00',
     type: 'personal',
     status: 'in-progress'
+  },
+  {
+    id: '2',
+    trainerId: '1',
+    trainerName: 'Yash',
+    memberName: 'Rahul Sharma',
+    startTime: '2024-01-16T09:00:00',
+    endTime: '2024-01-16T10:00:00',
+    type: 'personal',
+    status: 'completed'
+  },
+  {
+    id: '3',
+    trainerId: '3',
+    trainerName: 'Palak Dubey',
+    memberName: 'Sneha Verma',
+    startTime: '2024-01-17T14:00:00',
+    type: 'group',
+    status: 'scheduled'
+  },
+  {
+    id: '4',
+    trainerId: '1',
+    trainerName: 'Yash',
+    memberName: 'Amit Kumar',
+    startTime: '2024-01-18T16:00:00',
+    type: 'personal',
+    status: 'scheduled'
   }
 ]
 
@@ -275,7 +360,35 @@ const initialVisitors: Visitor[] = [
     phone: '+91 98765 43215',
     email: 'raj.visitor@email.com',
     checkInTime: '2024-01-15T09:00:00',
-    purpose: 'Gym Tour',
+    purpose: 'Gym Tour & Consultation',
+    status: 'checked-in'
+  },
+  {
+    id: '2',
+    name: 'Priya Gupta',
+    phone: '+91 98765 43220',
+    email: 'priya.guesta@email.com',
+    checkInTime: '2024-01-16T11:00:00',
+    checkOutTime: '2024-01-16T12:30:00',
+    purpose: 'Free Trial Session',
+    status: 'checked-out'
+  },
+  {
+    id: '3',
+    name: 'Karan Malhotra',
+    phone: '+91 98765 43221',
+    email: 'karan.guest@email.com',
+    checkInTime: '2024-01-17T15:00:00',
+    purpose: 'Membership Inquiry',
+    status: 'checked-in'
+  },
+  {
+    id: '4',
+    name: 'Meera Kapoor',
+    phone: '+91 98765 43222',
+    email: 'meera.visitor@email.com',
+    checkInTime: '2024-01-18T10:00:00',
+    purpose: 'Equipment Demo',
     status: 'checked-in'
   }
 ]
@@ -288,7 +401,7 @@ const initialInvoices: Invoice[] = [
     amount: 1500,
     description: 'Monthly Membership - January 2024',
     dueDate: '2024-02-01',
-    status: 'pending',
+    status: 'paid',
     createdAt: '2024-01-01T00:00:00.000Z',
     items: [
       {
@@ -302,6 +415,94 @@ const initialInvoices: Invoice[] = [
     subtotal: 999,
     tax: 179.82,
     total: 1178.82
+  },
+  {
+    id: '2',
+    memberId: '2',
+    memberName: 'Priya Patel',
+    amount: 2500,
+    description: 'Quarterly Membership - Q1 2024',
+    dueDate: '2024-01-15',
+    status: 'paid',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    items: [
+      {
+        id: '2',
+        description: 'Quarterly Membership',
+        quantity: 1,
+        price: 1999,
+        total: 1999
+      }
+    ],
+    subtotal: 1999,
+    tax: 359.82,
+    total: 2358.82
+  },
+  {
+    id: '3',
+    memberId: '3',
+    memberName: 'Amit Kumar',
+    amount: 5000,
+    description: 'Annual Membership - 2024',
+    dueDate: '2024-01-20',
+    status: 'paid',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    items: [
+      {
+        id: '3',
+        description: 'Annual Membership',
+        quantity: 1,
+        price: 3999,
+        total: 3999
+      }
+    ],
+    subtotal: 3999,
+    tax: 719.82,
+    total: 4718.82
+  },
+  {
+    id: '4',
+    memberId: '6',
+    memberName: 'Sneha Verma',
+    amount: 3000,
+    description: 'Quarterly Membership - Q1 2024',
+    dueDate: '2024-02-10',
+    status: 'pending',
+    createdAt: '2024-01-10T00:00:00.000Z',
+    items: [
+      {
+        id: '4',
+        description: 'Quarterly Membership',
+        quantity: 1,
+        price: 2499,
+        total: 2499
+      }
+    ],
+    subtotal: 2499,
+    tax: 449.82,
+    total: 2948.82
+  },
+  {
+    id: '5',
+    memberId: '7',
+    memberName: 'Vikram Singh',
+    amount: 10000,
+    description: 'Annual Membership Renewal - 2024',
+    dueDate: '2024-02-01',
+    status: 'pending',
+    createdAt: '2024-01-15T00:00:00.000Z',
+    items: [
+      {
+        id: '5',
+        description: 'Annual Membership',
+        quantity: 1,
+        price: 8999,
+        total: 8999
+      }
+    ],
+    subtotal: 8999,
+    tax: 1619.82,
+    total: 10618.82
   }
 ]
 
@@ -313,8 +514,49 @@ const initialFollowUps: FollowUp[] = [
     type: 'membership_expiry',
     status: 'pending',
     dueDate: '2024-01-01',
-    notes: 'Membership expired, need to contact for renewal',
+    notes: 'Membership expired, need to contact for renewal. She was interested in upgrading to quarterly plan.',
     createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: '2',
+    memberId: '5',
+    memberName: 'Raj Malhotra',
+    type: 'payment_reminder',
+    status: 'pending',
+    dueDate: '2024-01-25',
+    notes: 'New member, first payment due. Send welcome message and payment reminder.',
+    createdAt: '2024-01-15T00:00:00.000Z'
+  },
+  {
+    id: '3',
+    memberId: '6',
+    memberName: 'Sneha Verma',
+    type: 'visit_reminder',
+    status: 'pending',
+    dueDate: '2024-01-30',
+    notes: 'Haven\'t seen her this week. Send motivational message and check if she needs any support.',
+    createdAt: '2024-01-20T00:00:00.000Z'
+  },
+  {
+    id: '4',
+    memberId: '7',
+    memberName: 'Vikram Singh',
+    type: 'membership_expiry',
+    status: 'pending',
+    dueDate: '2024-02-01',
+    notes: 'Annual membership expiring soon. He\'s been very consistent, offer loyalty discount for renewal.',
+    createdAt: '2024-01-25T00:00:00.000Z'
+  },
+  {
+    id: '5',
+    memberId: '8',
+    memberName: 'Anjali Desai',
+    type: 'visit_reminder',
+    status: 'completed',
+    dueDate: '2024-01-22',
+    notes: 'New member orientation completed. She\'s excited about starting her fitness journey.',
+    createdAt: '2024-01-20T00:00:00.000Z',
+    completedAt: '2024-01-22T10:00:00.000Z'
   }
 ]
 
@@ -342,8 +584,63 @@ const initialActivities: Activity[] = [
     name: 'Yash',
     time: '2024-01-15T08:00:00',
     trainerId: '1'
+  },
+  {
+    id: '4',
+    type: 'trainer',
+    action: 'Personal training session started',
+    name: 'Mohit Sen with Neha Singh',
+    time: '2024-01-15T10:00:00',
+    trainerId: '2',
+    memberId: '4'
+  },
+  {
+    id: '5',
+    type: 'invoice',
+    action: 'Invoice generated',
+    name: 'Priya Patel - Quarterly Membership',
+    time: '2024-01-16T14:00:00',
+    memberId: '2'
+  },
+  {
+    id: '6',
+    type: 'member',
+    action: 'Membership renewed',
+    name: 'Amit Kumar',
+    time: '2024-01-17T11:00:00',
+    memberId: '3'
+  },
+  {
+    id: '7',
+    type: 'visitor',
+    action: 'Free trial session completed',
+    name: 'Priya Gupta',
+    time: '2024-01-16T12:30:00',
+    visitorId: '2'
+  },
+  {
+    id: '8',
+    type: 'followup',
+    action: 'Follow-up completed',
+    name: 'Anjali Desai',
+    time: '2024-01-22T10:00:00',
+    memberId: '8'
   }
 ]
+
+// Hook to initialize demo data if store is empty
+export const useInitializeDemoData = () => {
+  const { members, trainers, visitors, invoices, followUps, activities, initializeDemoData } = useDataStore()
+  
+  React.useEffect(() => {
+    // Check if store is empty and initialize demo data
+    if (members.length === 0 && trainers.length === 0 && visitors.length === 0 && 
+        invoices.length === 0 && followUps.length === 0 && activities.length === 0) {
+      console.log('Store is empty, initializing demo data...')
+      initializeDemoData()
+    }
+  }, [members.length, trainers.length, visitors.length, invoices.length, followUps.length, activities.length, initializeDemoData])
+}
 
 // Create the store
 export const useDataStore = create<DataStore>()(
@@ -735,7 +1032,57 @@ export const useDataStore = create<DataStore>()(
           activities: state.activities.length
         })
         return state
-      }
+      },
+
+      // Data management functions
+      clearAllData: () => set({
+        members: [],
+        trainers: [],
+        sessions: [],
+        visitors: [],
+        invoices: [],
+        followUps: [],
+        activities: []
+      }),
+
+      importData: (data: any) => set((state) => {
+        // Validate and merge imported data
+        const newState = { ...state }
+        
+        if (data.members && Array.isArray(data.members)) {
+          newState.members = data.members
+        }
+        if (data.trainers && Array.isArray(data.trainers)) {
+          newState.trainers = data.trainers
+        }
+        if (data.sessions && Array.isArray(data.sessions)) {
+          newState.sessions = data.sessions
+        }
+        if (data.visitors && Array.isArray(data.visitors)) {
+          newState.visitors = data.visitors
+        }
+        if (data.invoices && Array.isArray(data.invoices)) {
+          newState.invoices = data.invoices
+        }
+        if (data.followUps && Array.isArray(data.followUps)) {
+          newState.followUps = data.followUps
+        }
+        if (data.activities && Array.isArray(data.activities)) {
+          newState.activities = data.activities
+        }
+        
+        return newState
+      }),
+
+      initializeDemoData: () => set({
+        members: initialMembers,
+        trainers: initialTrainers,
+        sessions: initialSessions,
+        visitors: initialVisitors,
+        invoices: initialInvoices,
+        followUps: initialFollowUps,
+        activities: initialActivities
+      })
     }),
     {
       name: 'tristar-fitness-data',

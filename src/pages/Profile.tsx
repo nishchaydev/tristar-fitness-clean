@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { User, Edit, Save, Key, Eye, EyeOff, ArrowLeft, Settings, Shield, LogOut } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/hooks/use-toast'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 const Profile = () => {
   const { user, logout } = useAuth()
@@ -252,68 +253,71 @@ const Profile = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Profile Information */}
-          <Card className="profile-section">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center space-x-2">
-                <User className="h-5 w-5 text-green-600" />
+          <Card className="profile-section bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-gray-200 dark:border-gray-600">
+              <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white">
+                <div className="w-8 h-8 bg-gradient-to-br from-tristar-500 to-tristar-600 rounded-full flex items-center justify-center">
+                  <User className="h-4 w-4 text-white" />
+                </div>
                 <span>Profile Information</span>
               </CardTitle>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsEditing(!isEditing)}
+                className="hover:bg-tristar-50 hover:text-tristar-700 hover:border-tristar-300 dark:hover:bg-tristar-900/30 dark:hover:text-tristar-300 transition-all duration-200"
               >
                 <Edit className="h-4 w-4 mr-2" />
                 {isEditing ? 'Cancel' : 'Edit'}
               </Button>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="name">Full Name</Label>
+                  <Label htmlFor="name" className="text-gray-700 dark:text-gray-300 font-medium">Full Name</Label>
                   <Input
                     id="name"
                     value={profileData.name}
                     onChange={(e) => setProfileData({...profileData, name: e.target.value})}
                     disabled={!isEditing}
-                    className="form-input"
+                    className="form-input dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-gray-700 dark:text-gray-300 font-medium">Email</Label>
                   <Input
                     id="email"
                     type="email"
                     value={profileData.email}
                     onChange={(e) => setProfileData({...profileData, email: e.target.value})}
                     disabled={!isEditing}
-                    className="form-input"
+                    className="form-input dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone" className="text-gray-700 dark:text-gray-300 font-medium">Phone Number</Label>
                   <Input
                     id="phone"
                     value={profileData.phone}
                     onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
                     disabled={!isEditing}
-                    className="form-input"
+                    className="form-input dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="username" className="text-gray-700 dark:text-gray-300 font-medium">Username</Label>
                   <Input
                     id="username"
                     value={profileData.username}
                     disabled
-                    className="form-input bg-gray-50"
+                    className="form-input bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300"
                   />
                 </div>
               </div>
               {isEditing && (
-                <Button onClick={handleSaveProfile} className="btn-primary">
+                <Button onClick={handleSaveProfile} className="btn-primary bg-tristar-600 hover:bg-tristar-700 hover:scale-105 transition-transform duration-200">
                   <Save className="h-4 w-4 mr-2" />
                   Save Changes
                 </Button>
@@ -322,29 +326,31 @@ const Profile = () => {
           </Card>
 
           {/* Change Password */}
-          <Card className="profile-section">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Key className="h-5 w-5 text-blue-600" />
+          <Card className="profile-section bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg">
+            <CardHeader className="border-b border-gray-200 dark:border-gray-600">
+              <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                  <Key className="h-4 w-4 text-white" />
+                </div>
                 <span>Change Password</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 p-6">
               <div>
-                <Label htmlFor="currentPassword">Current Password</Label>
+                <Label htmlFor="currentPassword" className="text-gray-700 dark:text-gray-300 font-medium">Current Password</Label>
                 <div className="relative">
                   <Input
                     id="currentPassword"
                     type={showPassword ? "text" : "password"}
                     value={passwordData.currentPassword}
                     onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
-                    className="form-input pr-10"
+                    className="form-input pr-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3"
+                    className="absolute right-0 top-0 h-full px-3 hover:bg-gray-100 dark:hover:bg-gray-600"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -353,27 +359,27 @@ const Profile = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="newPassword">New Password</Label>
+                  <Label htmlFor="newPassword" className="text-gray-700 dark:text-gray-300 font-medium">New Password</Label>
                   <Input
                     id="newPassword"
                     type={showPassword ? "text" : "password"}
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
-                    className="form-input"
+                    className="form-input dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                  <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-300 font-medium">Confirm New Password</Label>
                   <Input
                     id="confirmPassword"
                     type={showPassword ? "text" : "password"}
                     value={passwordData.confirmPassword}
                     onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
-                    className="form-input"
+                    className="form-input dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                 </div>
               </div>
-              <Button onClick={handleChangePassword} className="btn-secondary">
+              <Button onClick={handleChangePassword} className="btn-secondary bg-blue-600 hover:bg-blue-700 hover:scale-105 transition-transform duration-200">
                 <Key className="h-4 w-4 mr-2" />
                 Change Password
               </Button>

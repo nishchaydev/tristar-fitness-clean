@@ -2,7 +2,7 @@ export interface User {
   id: string;
   username: string;
   email: string;
-  role: 'owner' | 'trainer';
+  role: 'owner' | 'trainer' | 'semi-admin';
   name: string;
   phone?: string;
   createdAt: string;
@@ -28,49 +28,60 @@ export const sampleUsers: User[] = [
     email: 'owner@tristarfitness.com',
     role: 'owner',
     name: 'Nikhil Verma',
-    phone: '+1 555 0123',
+    phone: '+91 98765 43210',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
   },
   {
     id: '2',
-    username: 'trainer1',
-    email: 'trainer1@tristarfitness.com',
+    username: 'yash',
+    email: 'yash@tristarfitness.com',
     role: 'trainer',
     name: 'Yash',
-    phone: '+1 555 0124',
+    phone: '+91 98765 43210',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
   },
   {
     id: '3',
-    username: 'trainer2',
-    email: 'trainer2@tristarfitness.com',
+    username: 'mohit',
+    email: 'mohit@tristarfitness.com',
     role: 'trainer',
     name: 'Mohit Sen',
-    phone: '+1 555 0125',
+    phone: '+91 98765 43211',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
   },
   {
     id: '4',
-    username: 'trainer3',
-    email: 'trainer3@tristarfitness.com',
+    username: 'palak',
+    email: 'palak@tristarfitness.com',
     role: 'trainer',
     name: 'Palak Dubey',
-    phone: '+1 555 0126',
+    phone: '+91 98765 43212',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
   },
+  {
+    id: '5',
+    username: 'nikhil',
+    email: 'nikhil@tristarfitness.com',
+    role: 'semi-admin',
+    name: 'Nikhil',
+    phone: '+91 98765 43213',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    lastLogin: new Date().toISOString(),
+  }
 ];
 
-// Simple password storage (in real app, use proper hashing)
-const userPasswords: Record<string, string> = {
-  'owner': 'owner123',
-  'trainer1': 'trainer123',
-  'trainer2': 'trainer123',
-  'trainer3': 'trainer123',
-};
+ // Simple password storage (in real app, use proper hashing)
+ const userPasswords: Record<string, string> = {
+   'owner': 'demo123',
+   'yash': 'demo123',
+   'mohit': 'demo123',
+   'palak': 'demo123',
+   'nikhil': 'demo123',
+ };
 
 // Authentication functions
 export const authenticateUser = (credentials: LoginCredentials): User | null => {
@@ -97,13 +108,21 @@ export const isTrainer = (user: User | null): boolean => {
   return user?.role === 'trainer';
 };
 
-export const hasPermission = (user: User | null, requiredRole: 'owner' | 'trainer'): boolean => {
+export const isSemiAdmin = (user: User | null): boolean => {
+  return user?.role === 'semi-admin';
+};
+
+export const hasPermission = (user: User | null, requiredRole: 'owner' | 'trainer' | 'semi-admin'): boolean => {
   if (!user) return false;
   
   if (requiredRole === 'owner') {
     return user.role === 'owner';
   }
   
+  if (requiredRole === 'semi-admin') {
+    return user.role === 'semi-admin' || user.role === 'owner';
+  }
+  
   // Trainers can access trainer-level features
-  return user.role === 'trainer' || user.role === 'owner';
+  return user.role === 'trainer' || user.role === 'owner' || user.role === 'semi-admin';
 };

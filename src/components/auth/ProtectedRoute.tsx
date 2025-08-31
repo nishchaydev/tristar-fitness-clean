@@ -5,7 +5,7 @@ import { hasPermission } from '@/lib/auth';
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  requiredRole?: 'owner' | 'trainer';
+  requiredRole?: 'owner' | 'trainer' | 'semi-admin';
   redirectTo?: string;
 }
 
