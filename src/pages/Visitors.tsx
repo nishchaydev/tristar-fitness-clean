@@ -103,24 +103,6 @@ const Visitors = () => {
     })
   }
 
-  const simulateQRScan = () => {
-    // Simulate scanning a QR code and pre-fill the form
-    const mockQRData = {
-      name: 'Demo Visitor',
-      phone: '+91 98765 43210',
-      email: 'demo@example.com',
-      purpose: 'Demo QR Code Scan'
-    }
-    
-    setFormData(mockQRData)
-    setShowForm(true)
-    
-    toast({
-      title: "QR Code Scanned",
-      description: "Demo visitor data loaded from QR code scan.",
-    })
-  }
-
   const generateQRForNikhil = async () => {
     const nikhilData = {
       name: 'Nikhil Kumar',
@@ -204,14 +186,6 @@ const Visitors = () => {
           <p className="text-gray-600 dark:text-gray-400">Track gym visitors and manage check-ins</p>
         </div>
         <div className="flex space-x-3">
-          <Button
-            onClick={simulateQRScan}
-            variant="outline"
-            className="hover:scale-105 transition-transform duration-200"
-          >
-            <Scan className="h-4 w-4 mr-2" />
-            Simulate QR Scan
-          </Button>
           <Button
             onClick={generateQRForNikhil}
             variant="outline"
