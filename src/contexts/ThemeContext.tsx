@@ -12,15 +12,11 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
-    // Check localStorage first, then system preference
+    // Always default to light theme, ignore system preference
     const savedTheme = localStorage.getItem('tristar_theme') as Theme;
-    if (savedTheme) return savedTheme;
+    if (savedTheme && savedTheme === 'light') return 'light';
     
-    // Check system preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    
+    // Force light theme as default
     return 'light';
   });
 
@@ -49,17 +45,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [theme]);
 
-  // Listen for system theme changes
+  // Remove system theme change listener - always stay light
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem('tristar_theme')) {
-        setTheme(e.matches ? 'dark' : 'light');
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    // Force light theme on mount
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('tristar_theme', 'light');
   }, []);
 
   return (
