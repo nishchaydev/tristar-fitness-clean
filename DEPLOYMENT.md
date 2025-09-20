@@ -4,7 +4,7 @@
 
 ### Option 1: Automated Script (Recommended)
 ```bash
-npm run git-deploy
+npm run git
 ```
 
 ### Option 2: Windows Batch File
@@ -76,7 +76,7 @@ npm run dev          # Start development server
 npm run build        # Build for production
 npm run preview      # Preview production build
 npm run lint         # Run ESLint
-npm run git-deploy   # Full deployment automation
+npm run git          # Full deployment automation
 ```
 
 ---

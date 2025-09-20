@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "git-deploy": "node scripts/deploy.js"
+    "git": "node scripts/deploy.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
