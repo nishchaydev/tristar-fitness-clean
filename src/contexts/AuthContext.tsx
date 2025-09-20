@@ -20,36 +20,17 @@ type AuthAction =
   | { type: 'SET_BACKEND_AVAILABLE'; payload: boolean };
 
 const authReducer = (state: AuthState & { isBackendAvailable: boolean }, action: AuthAction): AuthState & { isBackendAvailable: boolean } => {
-  let payloadInfo = 'no payload';
-  if ('payload' in action && action.payload) {
-    if (typeof action.payload === 'object' && 'name' in action.payload) {
-      payloadInfo = action.payload.name;
-    } else {
-      payloadInfo = JSON.stringify(action.payload);
-    }
-  }
-  console.log('🔄 Auth Reducer:', action.type, payloadInfo);
-  
   switch (action.type) {
     case 'LOGIN_START':
-      console.log('🔄 Setting loading to true');
       return { ...state, isLoading: true };
     case 'LOGIN_SUCCESS':
-      console.log('✅ Setting user and authenticated to true:', action.payload.name);
-      const newState = {
+      return {
         ...state,
         user: action.payload,
         isAuthenticated: true,
         isLoading: false,
       };
-      console.log('🔄 New state after LOGIN_SUCCESS:', {
-        user: newState.user?.name,
-        isAuthenticated: newState.isAuthenticated,
-        isLoading: newState.isLoading
-      });
-      return newState;
     case 'LOGIN_FAILURE':
-      console.log('❌ Setting authentication to false');
       return {
         ...state,
         user: null,
@@ -57,7 +38,6 @@ const authReducer = (state: AuthState & { isBackendAvailable: boolean }, action:
         isLoading: false,
       };
     case 'LOGOUT':
-      console.log('🚪 Logging out user');
       return {
         ...state,
         user: null,
@@ -65,13 +45,11 @@ const authReducer = (state: AuthState & { isBackendAvailable: boolean }, action:
         isLoading: false,
       };
     case 'SET_BACKEND_AVAILABLE':
-      console.log('🌐 Setting backend available:', action.payload);
       return {
         ...state,
         isBackendAvailable: action.payload,
       };
     case 'UPDATE_USER':
-      console.log('👤 Updating user:', action.payload.name);
       return {
         ...state,
         user: action.payload,
@@ -157,26 +135,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
-    console.log('🔑 Login attempt for:', credentials.username);
     dispatch({ type: 'LOGIN_START' });
     
     try {
       // Always try local authentication first for demo purposes
-      console.log('🔄 Using local authentication...');
       const user = authenticateUser(credentials);
       
       if (user) {
-        console.log('✅ Local auth successful for:', user.name);
         // Create a demo token
         const demoToken = `demo-token-${Date.now()}`;
         apiClient.setToken(demoToken);
         localStorage.setItem('auth_token', demoToken);
         localStorage.setItem('tristar_fitness_user', JSON.stringify(user));
-        console.log('💾 Saved to localStorage:', { user: user.name, token: demoToken });
         dispatch({ type: 'LOGIN_SUCCESS', payload: user });
         return true;
       } else {
-        console.log('❌ Local auth failed for credentials:', credentials.username);
         dispatch({ type: 'LOGIN_FAILURE' });
         return false;
       }

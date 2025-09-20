@@ -5,12 +5,13 @@ import { ThemeProvider } from '@/contexts/ThemeContext'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import Navigation from '@/components/shared/Navigation'
 import Login from '@/pages/Login'
+import LandingPage from '@/pages/LandingPage'
+import VisitorRegistration from '@/pages/VisitorRegistration'
 import Dashboard from '@/pages/Dashboard'
 import Members from '@/pages/Members'
 import AddMember from '@/pages/AddMember'
 import EditMember from '@/pages/EditMember'
 import Visitors from '@/pages/Visitors'
-import Trainers from '@/pages/Trainers'
 import Profile from '@/pages/Profile'
 import Invoices from '@/pages/Invoices'
 import DataManagement from '@/components/admin/DataManagement'
@@ -33,21 +34,14 @@ function App() {
         <Router>
           <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
           <Routes>
-            {/* Public Route */}
+            {/* Public Routes */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/landing" element={<LandingPage />} />
+            <Route path="/visitor-register" element={<VisitorRegistration />} />
+            <Route path="/admin-login" element={<Login />} />
             <Route path="/login" element={<Login />} />
             
             {/* Protected Routes */}
-            <Route path="/" element={
-              <ProtectedRoute>
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <Dashboard />
-                  </main>
-                </>
-              </ProtectedRoute>
-            } />
-            
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <>
@@ -98,17 +92,6 @@ function App() {
                   <Navigation />
                   <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
                     <Visitors />
-                  </main>
-                </>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/trainers" element={
-              <ProtectedRoute>
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <Trainers />
                   </main>
                 </>
               </ProtectedRoute>

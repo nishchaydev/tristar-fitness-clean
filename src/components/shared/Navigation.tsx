@@ -3,30 +3,26 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
   Home, 
-  UserCog, 
   FileText,
   Database,
   Dumbbell,
   LogOut,
   User,
-  Sun,
-  Moon,
-  MessageSquare
+  MessageSquare,
+  Users
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { useTheme } from '@/contexts/ThemeContext'
-import BackendStatus from './BackendStatus'
 
 const Navigation = () => {
   const location = useLocation()
   const { user, logout } = useAuth()
-  const { theme, toggleTheme } = useTheme()
 
   const navItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: Home, requiredRole: 'trainer' },
-    { path: '/trainers', label: 'Trainers', icon: UserCog, requiredRole: 'trainer' },
+    { path: '/dashboard', label: 'Dashboard', icon: Home, requiredRole: 'owner' },
+    { path: '/members', label: 'Members', icon: Users, requiredRole: 'owner' },
+    { path: '/visitors', label: 'Visitors', icon: User, requiredRole: 'owner' },
     { path: '/invoices', label: 'Invoices', icon: FileText, requiredRole: 'owner' },
-    { path: '/followup', label: 'Follow-ups', icon: MessageSquare, requiredRole: 'trainer' },
+    { path: '/followup', label: 'Follow-ups', icon: MessageSquare, requiredRole: 'owner' },
     { path: '/data-management', label: 'Data', icon: Database, requiredRole: 'owner' },
   ]
 
@@ -56,10 +52,8 @@ const Navigation = () => {
             <div className="flex space-x-1">
               {navItems
                 .filter(item => {
-                  if (item.requiredRole === 'owner') {
-                    return user?.role === 'owner'
-                  }
-                  return true // Trainers and semi-admin can see trainer-level items
+                  // Only show owner-level items
+                  return user?.role === 'owner'
                 })
                 .map((item) => {
                   const Icon = item.icon
@@ -83,18 +77,6 @@ const Navigation = () => {
                 })}
             </div>
 
-            {/* Backend Status */}
-            <BackendStatus />
-
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleTheme}
-              className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
 
             {/* User Info and Logout */}
             {user && (

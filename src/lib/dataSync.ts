@@ -408,10 +408,10 @@ const initialInvoices: Invoice[] = [
     memberId: '1',
     memberName: 'Rahul Sharma',
     amount: 1500,
-    description: 'Monthly Membership - January 2024',
-    dueDate: '2024-02-01',
+    description: 'Monthly Membership - January 2025',
+    dueDate: '2025-02-01',
     status: 'paid',
-    createdAt: '2024-01-01T00:00:00.000Z',
+    createdAt: '2025-01-01T00:00:00.000Z',
     items: [
       {
         id: '1',
@@ -430,10 +430,10 @@ const initialInvoices: Invoice[] = [
     memberId: '2',
     memberName: 'Priya Patel',
     amount: 2500,
-    description: 'Quarterly Membership - Q1 2024',
-    dueDate: '2024-01-15',
+    description: 'Quarterly Membership - Q1 2025',
+    dueDate: '2025-01-15',
     status: 'paid',
-    createdAt: '2024-01-01T00:00:00.000Z',
+    createdAt: '2025-01-01T00:00:00.000Z',
     items: [
       {
         id: '2',
@@ -452,10 +452,10 @@ const initialInvoices: Invoice[] = [
     memberId: '3',
     memberName: 'Amit Kumar',
     amount: 5000,
-    description: 'Annual Membership - 2024',
-    dueDate: '2024-01-20',
+    description: 'Annual Membership - 2025',
+    dueDate: '2025-01-20',
     status: 'paid',
-    createdAt: '2024-01-01T00:00:00.000Z',
+    createdAt: '2025-01-01T00:00:00.000Z',
     items: [
       {
         id: '3',
@@ -474,10 +474,10 @@ const initialInvoices: Invoice[] = [
     memberId: '6',
     memberName: 'Sneha Verma',
     amount: 3000,
-    description: 'Quarterly Membership - Q1 2024',
-    dueDate: '2024-02-10',
+    description: 'Quarterly Membership - Q1 2025',
+    dueDate: '2025-02-10',
     status: 'pending',
-    createdAt: '2024-01-10T00:00:00.000Z',
+    createdAt: '2025-01-10T00:00:00.000Z',
     items: [
       {
         id: '4',
@@ -645,7 +645,6 @@ export const useInitializeDemoData = () => {
     // Check if store is empty and initialize demo data
     if (members.length === 0 && trainers.length === 0 && visitors.length === 0 && 
         invoices.length === 0 && followUps.length === 0 && activities.length === 0) {
-      console.log('Store is empty, initializing demo data...')
       initializeDemoData()
     }
   }, [members.length, trainers.length, visitors.length, invoices.length, followUps.length, activities.length, initializeDemoData])

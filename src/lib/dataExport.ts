@@ -13,10 +13,7 @@ export interface ExportData {
 export class DataExporter {
   static exportToCSV(data: any[], filename: string) {
     try {
-      console.log('Exporting CSV:', { dataLength: data.length, filename });
-      
       if (!data || data.length === 0) {
-        console.warn('No data to export');
         throw new Error('No data to export');
       }
 
@@ -24,8 +21,6 @@ export class DataExporter {
         const value = data[0][key];
         return value !== undefined && value !== null && typeof value !== 'object';
       });
-      
-      console.log('CSV headers:', headers);
       
       const csvContent = [
         headers.join(','),
@@ -41,8 +36,6 @@ export class DataExporter {
           }).join(',')
         )
       ].join('\n');
-
-      console.log('CSV content length:', csvContent.length);
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -60,8 +53,6 @@ export class DataExporter {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       }, 100);
-      
-      console.log('CSV export successful');
     } catch (error) {
       console.error('CSV export error:', error);
       throw new Error(`Failed to export CSV: ${error}`);
@@ -70,8 +61,6 @@ export class DataExporter {
 
   static exportToPDF(data: any[], filename: string, title: string) {
     try {
-      console.log('Starting HTML export (PDF alternative):', { dataLength: data.length, filename, title });
-      
       if (!data || data.length === 0) {
         throw new Error('No data to export');
       }

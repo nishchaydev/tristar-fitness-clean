@@ -299,9 +299,9 @@ const dataStore = {
       memberName: 'Amit Kumar',
       amount: 1299,
       description: 'Monthly membership renewal',
-      dueDate: '2024-02-15',
+      dueDate: '2025-02-15',
       status: 'pending',
-      createdAt: '2024-01-15T10:00:00Z',
+      createdAt: '2025-01-15T10:00:00Z',
       items: [
         {
           id: '1',
@@ -314,7 +314,7 @@ const dataStore = {
       subtotal: 999,
       tax: 180,
       total: 1179,
-      updatedAt: '2024-01-15T10:00:00Z'
+      updatedAt: '2025-01-15T10:00:00Z'
     },
     {
       id: 'INV-002',
@@ -322,9 +322,9 @@ const dataStore = {
       memberName: 'Priya Patel',
       amount: 2499,
       description: 'Quarterly membership payment',
-      dueDate: '2024-02-01',
+      dueDate: '2025-02-01',
       status: 'paid',
-      createdAt: '2024-01-10T10:00:00Z',
+      createdAt: '2025-01-10T10:00:00Z',
       items: [
         {
           id: '2',
@@ -337,7 +337,7 @@ const dataStore = {
       subtotal: 2499,
       tax: 450,
       total: 2949,
-      updatedAt: '2024-01-10T10:00:00Z'
+      updatedAt: '2025-01-10T10:00:00Z'
     },
     {
       id: 'INV-003',
@@ -345,9 +345,9 @@ const dataStore = {
       memberName: 'Neha Singh',
       amount: 8999,
       description: 'Annual membership payment',
-      dueDate: '2024-01-31',
+      dueDate: '2025-01-31',
       status: 'overdue',
-      createdAt: '2024-01-05T10:00:00Z',
+      createdAt: '2025-01-05T10:00:00Z',
       items: [
         {
           id: '3',
@@ -360,7 +360,7 @@ const dataStore = {
       subtotal: 8999,
       tax: 1620,
       total: 10619,
-      updatedAt: '2024-01-05T10:00:00Z'
+      updatedAt: '2025-01-05T10:00:00Z'
     }
   ],
   followUps: [

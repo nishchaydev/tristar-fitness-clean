@@ -65,9 +65,9 @@ const demoData = {
       tax: 9.99,
       totalAmount: 109.98,
       status: 'paid',
-      dueDate: '2024-01-31',
+      dueDate: '2025-01-31',
       paymentMethod: 'credit_card',
-      createdAt: '2024-01-01T00:00:00.000Z'
+      createdAt: '2025-01-01T00:00:00.000Z'
     }
   ]
 };

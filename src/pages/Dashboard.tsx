@@ -34,7 +34,6 @@ const Dashboard = () => {
   // Get synchronized data from the store
   const { 
     members, 
-    trainers, 
     visitors, 
     invoices,
     followUps,
@@ -61,29 +60,12 @@ const Dashboard = () => {
     return invoiceDate.getMonth() === currentMonth && invoiceDate.getFullYear() === currentYear
   })
   const currentMonthRevenue = monthlyRevenueData.reduce((sum, i) => sum + i.total, 0)
-
-  // Debug: Log store state on component mount
-  React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Dashboard Data Store State:', {
-        members: members.length,
-        trainers: trainers.length,
-        visitors: visitors.length,
-        invoices: invoices.length,
-        followUps: followUps.length,
-        activities: activities.length,
-        monthlyRevenue: monthlyRevenue
-      })
-    }
-  }, [members.length, trainers.length, visitors.length, invoices.length, followUps.length, activities.length, monthlyRevenue])
   
   const stats = {
     totalMembers: members.length,
     activeMembers: members.filter(m => m.status === 'active').length,
     expiringMembers: getExpiringMembers().length,
     totalVisitors: visitors.filter(v => v.status === 'checked-in').length,
-    checkedInTrainers: trainers.filter(t => t.status === 'available' || t.status === 'busy').length,
-    totalTrainers: trainers.length,
     monthlyRevenue: monthlyRevenue,
     pendingInvoices: invoices.filter(i => i.status === 'pending').length,
     pendingFollowUps: getPendingFollowUps().length
@@ -188,7 +170,6 @@ const Dashboard = () => {
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
           <p className="text-sm text-blue-800 dark:text-blue-200">
             <strong>Debug Info:</strong> Members: {members.length} | 
-            Trainers: {trainers.length} | 
             Visitors: {visitors.length} | 
             Invoices: {invoices.length} | 
             Follow-ups: {followUps.length} |
@@ -202,7 +183,7 @@ const Dashboard = () => {
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Welcome back, {user?.name}! {isOwner(user) ? 'You have full access to all features.' : 'You have limited access to trainer features.'}
+            Welcome back, {user?.name}! You have full access to all gym management features.
           </p>
           <div className="mt-2">
             <Button
@@ -290,21 +271,6 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </Link>
-        ) : (
-          <Link to="/trainers" className="block group">
-            <Card className="stat-card card-hover bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow-lg group-hover:scale-105">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">Today's Sessions</CardTitle>
-                <UserCog className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-              </CardHeader>
-              <CardContent className="pt-2">
-                <div className="text-3xl font-bold text-gray-900 dark:text-white leading-tight">8</div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                  <span className="text-purple-600 dark:text-purple-400 font-medium">+2</span> from yesterday
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
         )}
       </div>
 
@@ -367,20 +333,11 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3 max-h-96 overflow-y-auto">
-              {recentActivities
-                .filter(activity => {
-                  // Trainers can't see member/invoice activities
-                  if (!isOwner(user) && (activity.type === 'member' || activity.type === 'invoice')) {
-                    return false
-                  }
-                  return true
-                })
-                .map((activity, index) => (
+              {recentActivities.map((activity, index) => (
                   <div key={`${activity.id}-${index}`} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <div className="flex-shrink-0">
                       {activity.type === 'member' && <Users className="h-5 w-5 text-green-600" />}
                       {activity.type === 'visitor' && <UserCheck className="h-5 w-5 text-blue-600" />}
-                      {activity.type === 'trainer' && <UserCog className="h-5 w-5 text-purple-600" />}
                       {activity.type === 'invoice' && <FileText className="h-5 w-5 text-orange-600" />}
                       {activity.type === 'followup' && <Clock className="h-5 w-5 text-yellow-600" />}
                     </div>
@@ -459,12 +416,6 @@ const Dashboard = () => {
               <Button variant="outline" className="w-full h-20 flex flex-col space-y-2 hover:scale-105 transition-transform duration-200">
                 <UserCheck className="h-6 w-6 text-blue-600" />
                 <span>Scan Visitor QR</span>
-              </Button>
-            </Link>
-            <Link to="/trainers">
-              <Button variant="outline" className="w-full h-20 flex flex-col space-y-2 hover:scale-105 transition-transform duration-200">
-                <UserCog className="h-6 w-6 text-purple-600" />
-                <span>{isOwner(user) ? 'Trainer Check-in' : 'My Schedule'}</span>
               </Button>
             </Link>
             {isOwner(user) && (
