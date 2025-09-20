@@ -52,8 +52,8 @@ export class PDFGenerator {
     this.doc.setFontSize(12)
     this.doc.setFont('helvetica', 'normal')
     this.doc.text('Your Fitness Journey Starts Here', 105, 40, { align: 'center' })
-    this.doc.text('123 Fitness Street, Gym City, GC 12345', 105, 50, { align: 'center' })
-    this.doc.text('Phone: +91 98765 43210 | Email: info@tristarfitness.com', 105, 55, { align: 'center' })
+    this.doc.text('Sapna Sangeeta Rd, next to LOTUS ELECTRONIC, Snehnagar, Indore, Madhya Pradesh 452001', 105, 50, { align: 'center' })
+    this.doc.text('Phone: 076930 06065 | Email: info@tristarfitness.com', 105, 55, { align: 'center' })
     
     // Invoice details section with professional layout
     this.doc.setFillColor(248, 250, 252) // Light gray background
