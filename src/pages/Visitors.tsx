@@ -235,48 +235,52 @@ const Visitors = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Visitor Management</h1>
-          <p className="text-gray-600 dark:text-gray-400">Track gym visitors and manage check-ins</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Visitor Management</h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Track gym visitors and manage check-ins</p>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <Button
             onClick={generateVisitorQR}
             variant="outline"
-            className="hover:scale-105 transition-transform duration-200"
+            className="hover:scale-105 transition-transform duration-200 text-sm sm:text-base"
+            size="sm"
           >
             <QrCode className="h-4 w-4 mr-2" />
-            Generate Visitor QR
+            <span className="hidden sm:inline">Generate Visitor QR</span>
+            <span className="sm:hidden">QR Code</span>
           </Button>
           <Button
             onClick={() => setShowForm(true)}
-            className="bg-green-600 hover:bg-green-700 hover:scale-105 transition-transform duration-200"
+            className="bg-green-600 hover:bg-green-700 hover:scale-105 transition-transform duration-200 text-sm sm:text-base"
+            size="sm"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Visitor
+            <span className="hidden sm:inline">Add Visitor</span>
+            <span className="sm:hidden">Add</span>
           </Button>
         </div>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg">
-          <CardContent className="p-6 text-center">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">{currentVisitors.length}</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Currently Checked In</div>
+          <CardContent className="p-4 sm:p-6 text-center">
+            <div className="text-2xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400">{currentVisitors.length}</div>
+            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Currently Checked In</div>
           </CardContent>
         </Card>
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg">
-          <CardContent className="p-6 text-center">
-            <div className="text-3xl font-bold text-green-600 dark:text-green-400">{visitors.length}</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Total Visitors Today</div>
+          <CardContent className="p-4 sm:p-6 text-center">
+            <div className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">{visitors.length}</div>
+            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Total Visitors Today</div>
           </CardContent>
         </Card>
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg">
-          <CardContent className="p-6 text-center">
-            <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">{checkedOutVisitors.length}</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Checked Out</div>
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg sm:col-span-2 lg:col-span-1">
+          <CardContent className="p-4 sm:p-6 text-center">
+            <div className="text-2xl sm:text-3xl font-bold text-orange-600 dark:text-orange-400">{checkedOutVisitors.length}</div>
+            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Checked Out</div>
           </CardContent>
         </Card>
       </div>

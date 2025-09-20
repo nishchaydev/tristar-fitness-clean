@@ -179,10 +179,10 @@ const Dashboard = () => {
         </div>
       )}
       
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Welcome back, {user?.name}! You have full access to all gym management features.
           </p>
           <div className="mt-2">
@@ -190,9 +190,9 @@ const Dashboard = () => {
               onClick={() => initializeDemoData()}
               variant="outline"
               size="sm"
-              className="hover:scale-105 transition-transform duration-200"
+              className="hover:scale-105 transition-transform duration-200 text-xs sm:text-sm"
             >
-              <RefreshCw className="h-4 w-4 mr-2" />
+              <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
               Load Demo Data
             </Button>
           </div>
@@ -200,9 +200,10 @@ const Dashboard = () => {
         <div className="flex space-x-2">
           {isOwner(user) && (
             <Link to="/add-member">
-              <Button className="bg-green-600 hover:bg-green-700">
-                <Users className="h-4 w-4 mr-2" />
-                Add Member
+              <Button className="bg-green-600 hover:bg-green-700 text-sm sm:text-base" size="sm">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                <span className="hidden sm:inline">Add Member</span>
+                <span className="sm:hidden">Add</span>
               </Button>
             </Link>
           )}
@@ -214,11 +215,11 @@ const Dashboard = () => {
         <Link to="/members" className="block group">
           <Card className="stat-card card-hover bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow-lg group-hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">Total Members</CardTitle>
-              <Users className="h-4 w-4 text-green-600 dark:text-green-400" />
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">Total Members</CardTitle>
+              <Users className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 dark:text-green-400" />
             </CardHeader>
             <CardContent className="pt-2">
-              <div className="text-3xl font-bold text-gray-900 dark:text-white leading-tight">{stats.totalMembers}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">{stats.totalMembers}</div>
               <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                 <span className="text-green-600 dark:text-green-400 font-medium">+12</span> from last month
               </p>

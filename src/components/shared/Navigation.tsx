@@ -9,13 +9,17 @@ import {
   LogOut,
   User,
   MessageSquare,
-  Users
+  Users,
+  Menu,
+  X
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useState } from 'react'
 
 const Navigation = () => {
   const location = useLocation()
   const { user, logout } = useAuth()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: Home, requiredRole: 'owner' },
@@ -31,13 +35,13 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo and Brand */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <Link to="/dashboard" className="flex items-center space-x-2 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-tristar-500 to-tristar-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                <Dumbbell className="h-6 w-6 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-tristar-500 to-tristar-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                <Dumbbell className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
               </div>
-              <div className="text-left">
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-tristar-600 dark:group-hover:text-tristar-400 transition-colors duration-200">
+              <div className="text-left hidden sm:block">
+                <h1 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white group-hover:text-tristar-600 dark:group-hover:text-tristar-400 transition-colors duration-200">
                   TriStar
                 </h1>
                 <p className="text-xs text-gray-600 dark:text-gray-400 -mt-1">
@@ -47,7 +51,8 @@ const Navigation = () => {
             </Link>
           </div>
           
-          <div className="flex items-center space-x-4">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-4">
             {/* Navigation Items */}
             <div className="flex space-x-1">
               {navItems
@@ -70,13 +75,12 @@ const Navigation = () => {
                         }`}
                       >
                         <Icon className="h-4 w-4 transition-transform duration-200 group-hover:rotate-12" />
-                        <span>{item.label}</span>
+                        <span className="hidden lg:inline">{item.label}</span>
                       </Button>
                     </Link>
                   )
                 })}
             </div>
-
 
             {/* User Info and Logout */}
             {user && (
@@ -85,12 +89,12 @@ const Navigation = () => {
                   to="/profile"
                   className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors group"
                 >
-                  <div className="w-10 h-10 bg-gradient-to-br from-tristar-500 to-tristar-600 rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200 group-hover:scale-105">
-                    <span className="text-white font-semibold text-sm leading-none">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-tristar-500 to-tristar-600 rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200 group-hover:scale-105">
+                    <span className="text-white font-semibold text-xs sm:text-sm leading-none">
                       {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                     </span>
                   </div>
-                  <div className="text-left min-w-0">
+                  <div className="text-left min-w-0 hidden lg:block">
                     <p className="text-sm font-semibold text-gray-900 dark:text-white truncate max-w-32">{user.name}</p>
                     <div className="flex items-center space-x-1">
                       <Badge 
@@ -109,12 +113,87 @@ const Navigation = () => {
                   className="text-gray-700 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  Logout
+                  <span className="hidden lg:inline">Logout</span>
                 </Button>
               </div>
             )}
           </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-gray-700 dark:text-gray-200"
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              {navItems
+                .filter(item => user?.role === 'owner')
+                .map((item) => {
+                  const Icon = item.icon
+                  const isActive = location.pathname === item.path
+                  
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center space-x-3 px-3 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActive
+                          ? 'bg-tristar-600 text-white'
+                          : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      }`}
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span>{item.label}</span>
+                    </Link>
+                  )
+                })}
+              
+              {/* Mobile User Info */}
+              {user && (
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
+                  <div className="flex items-center space-x-3 px-3 py-2">
+                    <div className="w-10 h-10 bg-gradient-to-br from-tristar-500 to-tristar-600 rounded-full flex items-center justify-center shadow-md">
+                      <span className="text-white font-semibold text-sm leading-none">
+                        {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">{user.name}</p>
+                      <Badge 
+                        variant={user.role === 'owner' ? 'default' : 'secondary'}
+                        className="text-xs px-2 py-0.5 mt-1"
+                      >
+                        {user.role === 'owner' ? '🏢 Owner' : '👨‍💼 Semi-Admin'}
+                      </Badge>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      logout()
+                      setIsMobileMenuOpen(false)
+                    }}
+                    className="w-full justify-start text-gray-700 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 mt-2"
+                  >
+                    <LogOut className="h-4 w-4 mr-3" />
+                    Logout
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   )
