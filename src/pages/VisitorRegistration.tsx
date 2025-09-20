@@ -39,7 +39,6 @@ const VisitorRegistration = () => {
   const purposes = [
     'Gym Tour',
     'Personal Training Session',
-    'Group Class',
     'Equipment Demo',
     'Membership Inquiry',
     'General Visit',
