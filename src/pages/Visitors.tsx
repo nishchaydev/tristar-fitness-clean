@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { UserCheck, QrCode, Plus, LogOut, Clock, MapPin, Download, Scan } from 'lucide-react'
+import { UserCheck, QrCode, Plus, LogOut, Clock, MapPin, Download, Scan, MessageSquare, Calendar, UserPlus } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { formatIndianPhone } from '@/lib/utils'
@@ -218,6 +218,36 @@ const Visitors = () => {
     })
   }
 
+  const convertVisitorToMember = (visitor: Visitor) => {
+    // This would typically open a modal or navigate to member creation
+    // For now, we'll add them to follow-ups with a special note
+    const followUp = {
+      id: `FU-${Date.now()}`,
+      memberId: visitor.id,
+      memberName: visitor.name,
+      type: 'membership_expiry' as const,
+      status: 'pending' as const,
+      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Next week
+      notes: `CONVERT TO MEMBER: ${visitor.name} (${visitor.phone}). Purpose: ${visitor.purpose}. High priority conversion candidate.`,
+      createdAt: new Date().toISOString(),
+    }
+    
+    addFollowUp(followUp)
+    addActivity({
+      type: 'followup',
+      action: 'Member Conversion',
+      name: `Visitor ${visitor.name} marked for member conversion`,
+      time: new Date().toISOString(),
+      details: `High priority follow-up for member conversion scheduled for ${followUp.dueDate}`,
+      memberId: visitor.id,
+    })
+    
+    toast({
+      title: "Conversion Follow-up Added",
+      description: `${visitor.name} has been added to high-priority member conversion follow-ups.`,
+    })
+  }
+
   const checkInVisitor = (visitorId: string) => {
     updateVisitor(visitorId, {
       status: 'checked-in',
@@ -401,7 +431,7 @@ const Visitors = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     {visitor.qrCodeDataUrl && (
                       <Button
                         size="sm"
@@ -413,6 +443,24 @@ const Visitors = () => {
                         QR
                       </Button>
                     )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => addVisitorToFollowup(visitor)}
+                      className="hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-900/30 dark:hover:text-green-300 transition-all duration-200"
+                    >
+                      <MessageSquare className="h-4 w-4 mr-1" />
+                      Follow-up
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => convertVisitorToMember(visitor)}
+                      className="hover:bg-purple-50 hover:text-purple-700 hover:border-purple-300 dark:hover:bg-purple-900/30 dark:hover:text-purple-300 transition-all duration-200"
+                    >
+                      <UserPlus className="h-4 w-4 mr-1" />
+                      Convert
+                    </Button>
                     <Button
                       size="sm"
                       variant="outline"
