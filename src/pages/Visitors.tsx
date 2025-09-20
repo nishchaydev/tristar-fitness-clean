@@ -103,26 +103,81 @@ const Visitors = () => {
     })
   }
 
-  const generateQRForNikhil = async () => {
-    const nikhilData = {
-      name: 'Nikhil Kumar',
-      phone: '+91 98765 43223',
-      email: 'nikhil.kumar@email.com',
-      purpose: 'Personal Training Consultation'
+  const generateVisitorQR = () => {
+    // Generate QR code that links to visitor registration page
+    const visitorRegistrationUrl = `${window.location.origin}/visitor-register`
+    
+    // Show QR code in a modal or new window
+    const qrWindow = window.open('', '_blank', 'width=400,height=500')
+    if (qrWindow) {
+      qrWindow.document.write(`
+        <html>
+          <head>
+            <title>Visitor Registration QR Code</title>
+            <style>
+              body { 
+                font-family: Arial, sans-serif; 
+                text-align: center; 
+                padding: 20px;
+                background: #f5f5f5;
+              }
+              .qr-container {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                margin: 20px auto;
+                max-width: 300px;
+              }
+              .qr-code {
+                margin: 20px 0;
+              }
+              .info {
+                color: #666;
+                margin: 10px 0;
+              }
+              .url {
+                background: #f0f0f0;
+                padding: 10px;
+                border-radius: 5px;
+                word-break: break-all;
+                font-size: 12px;
+                margin: 10px 0;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="qr-container">
+              <h2>🏋️‍♂️ TriStar Fitness</h2>
+              <h3>Visitor Registration QR Code</h3>
+              <div class="qr-code">
+                <div id="qrcode"></div>
+              </div>
+              <p class="info">Scan this QR code to register as a visitor</p>
+              <div class="url">${visitorRegistrationUrl}</div>
+              <p class="info">Or visit the URL directly</p>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+            <script>
+              QRCode.toCanvas(document.getElementById('qrcode'), '${visitorRegistrationUrl}', {
+                width: 200,
+                margin: 2,
+                color: {
+                  dark: '#000000',
+                  light: '#FFFFFF'
+                }
+              }, function (error) {
+                if (error) console.error(error)
+              })
+            </script>
+          </body>
+        </html>
+      `)
     }
-    
-    const qrCodeDataUrl = await generateQRCode(nikhilData)
-    
-    // Add Nikhil as a visitor
-    addVisitor({
-      ...nikhilData,
-      checkInTime: new Date().toISOString(),
-      status: 'checked-in' as const
-    })
     
     toast({
       title: "QR Code Generated",
-      description: "Nikhil Kumar has been added as a visitor with QR code.",
+      description: "QR code opened in new window. Visitors can scan to register.",
     })
   }
 
@@ -187,12 +242,12 @@ const Visitors = () => {
         </div>
         <div className="flex space-x-3">
           <Button
-            onClick={generateQRForNikhil}
+            onClick={generateVisitorQR}
             variant="outline"
             className="hover:scale-105 transition-transform duration-200"
           >
             <QrCode className="h-4 w-4 mr-2" />
-            Generate QR for Nikhil
+            Generate Visitor QR
           </Button>
           <Button
             onClick={() => setShowForm(true)}
