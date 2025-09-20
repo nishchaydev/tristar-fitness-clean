@@ -107,7 +107,7 @@ const LandingPage = () => {
                   Flexible Hours
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Open 24/7 to fit your busy schedule. Work out whenever it's convenient for you.
+                  Open to fit your busy schedule. Work out whenever it's convenient for you.
                 </p>
               </CardContent>
             </Card>
