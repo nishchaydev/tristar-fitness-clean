@@ -345,3 +345,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Made with ❤️ for TriStar Fitness**
 
 *Empowering gym owners with professional management tools*
+#   D e p l o y m e n t   U p d a t e  
+ 
