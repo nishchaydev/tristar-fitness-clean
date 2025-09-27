@@ -132,6 +132,8 @@ router.post('/demo-login', [
         
         // Demo user validation
         const demoUsers = {
+            'owner@tristar.com': { id: '1', username: 'owner@tristar.com', name: 'Nikhil Verma', role: 'owner', email: 'owner@tristar.com' },
+            'manager@tristar.com': { id: '2', username: 'manager@tristar.com', name: 'Manager', role: 'manager', email: 'manager@tristar.com' },
             'owner': { id: '1', username: 'owner', name: 'Nikhil Verma', role: 'owner', email: 'owner@tristarfitness.com' },
             'manager': { id: '2', username: 'manager', name: 'Manager', role: 'manager', email: 'manager@tristarfitness.com' },
             'nikhil': { id: '3', username: 'nikhil', name: 'Nikhil Verma', role: 'owner', email: 'nikhil@tristarfitness.com' },

@@ -96,14 +96,16 @@ class ApiClient {
   // Authentication
   async login(username: string, password: string): Promise<ApiResponse> {
     try {
-      const response = await this.request('/api/auth/login', {
+      // Try demo-login first (works with SQLite setup)
+      const response = await this.request('/api/auth/demo-login', {
         method: 'POST',
         body: JSON.stringify({ username, password }),
       });
 
-      if (response.success && response.data?.token) {
-        this.token = response.data.token;
+      if (response.success && response.token) {
+        this.token = response.token;
         localStorage.setItem('auth_token', this.token);
+        localStorage.setItem('tristar_fitness_user', JSON.stringify(response.user));
       }
 
       return response;

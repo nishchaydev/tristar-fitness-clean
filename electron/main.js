@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, shell, ipcMain } = require('electron');
 const path = require('path');
+const isDev = require('electron-is-dev');
 const Database = require('./db');
 
 let mainWindow;
@@ -25,8 +26,12 @@ function createWindow() {
     title: 'TriStar Fitness - Gym Management System'
   });
 
-  // Load the app from GitHub Pages
-  mainWindow.loadURL('https://nishchaydev.github.io/tristar-fitness-clean/');
+  // Load the app from local dist folder
+  const startUrl = isDev 
+    ? 'http://localhost:3000' 
+    : `file://${path.join(__dirname, '../dist/index.html')}`;
+  
+  mainWindow.loadURL(startUrl);
 
   // Show window when ready
   mainWindow.once('ready-to-show', () => {
