@@ -12,11 +12,13 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
-    // Always default to light theme, ignore system preference
+    // Check for saved theme preference
     const savedTheme = localStorage.getItem('tristar_theme') as Theme;
-    if (savedTheme && savedTheme === 'light') return 'light';
+    if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
+      return savedTheme;
+    }
     
-    // Force light theme as default
+    // Default to light theme
     return 'light';
   });
 
@@ -45,11 +47,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [theme]);
 
-  // Remove system theme change listener - always stay light
+  // Apply theme on mount
   useEffect(() => {
-    // Force light theme on mount
-    document.documentElement.classList.remove('dark');
-    localStorage.setItem('tristar_theme', 'light');
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }, []);
 
   return (
@@ -66,4 +70,3 @@ export const useTheme = (): ThemeContextType => {
   }
   return context;
 };
-

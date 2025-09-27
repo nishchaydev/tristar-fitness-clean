@@ -14,10 +14,12 @@ export const useInitializeDemoData = () => {
   
   useEffect(() => {
     // Check if store is empty and initialize demo data
-    if (members.length === 0 && trainers.length === 0 && visitors.length === 0 && 
+    if (members && trainers && visitors && invoices && followUps && activities &&
+        members.length === 0 && trainers.length === 0 && visitors.length === 0 && 
         invoices.length === 0 && followUps.length === 0 && activities.length === 0) {
       console.log('Store is empty, initializing demo data...')
       initializeDemoData()
     }
-  }, [members.length, trainers.length, visitors.length, invoices.length, followUps.length, activities.length, initializeDemoData])
+  }, [members, trainers, visitors, invoices, followUps, activities, initializeDemoData])
 }
+

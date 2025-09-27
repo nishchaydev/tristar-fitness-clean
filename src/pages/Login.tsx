@@ -57,15 +57,15 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo and Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-full mb-4">
-            <Dumbbell className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-600 to-blue-600 rounded-full mb-6 shadow-lg">
+            <Dumbbell className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">TriStar Fitness</h1>
-          <p className="text-gray-600 mt-2">Gym Management System</p>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">TriStar Fitness</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2 text-lg">Gym Management System</p>
         </div>
 
         {/* Login Card */}
@@ -136,18 +136,14 @@ const Login = () => {
               </Button>
             </form>
 
-            {/* Quick Login Demo */}
+            {/* Demo Account Info */}
             <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-xs text-gray-500 text-center mb-3">Demo Account (Click to login)</p>
-              <div className="grid grid-cols-1 gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => quickLogin('owner', 'demo123')}
-                  className="text-xs"
-                >
-                  🏢 Nikhil Verma - Gym Owner (Full Access)
-                </Button>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <p className="text-sm text-blue-800 dark:text-blue-200 font-medium mb-2">Demo Credentials</p>
+                <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                  <p><strong>Manager:</strong> manager / demo123</p>
+                  <p><strong>Owner:</strong> owner / demo123</p>
+                </div>
               </div>
             </div>
           </CardContent>

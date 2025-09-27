@@ -5,13 +5,13 @@ import { hasPermission } from '@/lib/auth';
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  requiredRole?: 'owner' | 'trainer' | 'semi-admin';
+  requiredRole?: 'owner' | 'manager';
   redirectTo?: string;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
-  requiredRole = 'trainer',
+  requiredRole = 'manager',
   redirectTo = '/login',
 }) => {
   const { user, isAuthenticated, isLoading } = useAuth();

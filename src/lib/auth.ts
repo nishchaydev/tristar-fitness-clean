@@ -143,6 +143,10 @@ export const isSemiAdmin = (user: User | null): boolean => {
   return user?.role === 'semi-admin';
 };
 
+export const isManager = (user: User | null): boolean => {
+  return user?.role === 'semi-admin' || user?.role === 'owner';
+};
+
 export const hasPermission = (user: User | null, requiredRole: 'owner' | 'trainer' | 'semi-admin'): boolean => {
   if (!user) return false;
   

@@ -5,8 +5,6 @@ import { ThemeProvider } from '@/contexts/ThemeContext'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import Navigation from '@/components/shared/Navigation'
 import Login from '@/pages/Login'
-import LandingPage from '@/pages/LandingPage'
-import VisitorRegistration from '@/pages/VisitorRegistration'
 import Dashboard from '@/pages/Dashboard'
 import Members from '@/pages/Members'
 import AddMember from '@/pages/AddMember'
@@ -19,12 +17,14 @@ import FollowUp from '@/pages/FollowUp'
 import AuthTest from '@/pages/AuthTest'
 import Debug from '@/pages/Debug'
 import NotFound from '@/pages/NotFound'
+import MemberCheckIn from '@/pages/MemberCheckIn'
+import Analytics from '@/pages/Analytics'
+import FollowUpManagement from '@/pages/FollowUpManagement'
+import Settings from '@/pages/Settings'
 import './App.css'
 import { useInitializeDemoData } from '@/hooks/useInitializeDemoData'
 
 function App() {
-  console.log('App component rendering...');
-  
   // Initialize demo data if store is empty
   useInitializeDemoData();
   
@@ -35,131 +35,128 @@ function App() {
           <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/landing" element={<LandingPage />} />
-            <Route path="/visitor-register" element={<VisitorRegistration />} />
-            <Route path="/admin-login" element={<Login />} />
+            <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
             
             {/* Protected Routes */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <Dashboard />
-                  </main>
-                </>
+                <Navigation>
+                  <Dashboard />
+                </Navigation>
               </ProtectedRoute>
             } />
             
             <Route path="/members" element={
               <ProtectedRoute requiredRole="owner">
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <Members />
-                  </main>
-                </>
+                <Navigation>
+                  <Members />
+                </Navigation>
               </ProtectedRoute>
             } />
             
             <Route path="/add-member" element={
               <ProtectedRoute requiredRole="owner">
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <AddMember />
-                  </main>
-                </>
+                <Navigation>
+                  <AddMember />
+                </Navigation>
               </ProtectedRoute>
             } />
             
             <Route path="/edit-member/:id" element={
               <ProtectedRoute requiredRole="owner">
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <EditMember />
-                  </main>
-                </>
+                <Navigation>
+                  <EditMember />
+                </Navigation>
               </ProtectedRoute>
             } />
             
             <Route path="/visitors" element={
               <ProtectedRoute>
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <Visitors />
-                  </main>
-                </>
+                <Navigation>
+                  <Visitors />
+                </Navigation>
               </ProtectedRoute>
             } />
             
             <Route path="/profile" element={
               <ProtectedRoute>
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <Profile />
-                  </main>
-                </>
+                <Navigation>
+                  <Profile />
+                </Navigation>
               </ProtectedRoute>
             } />
             
             <Route path="/invoices" element={
               <ProtectedRoute requiredRole="owner">
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <Invoices />
-                  </main>
-                </>
+                <Navigation>
+                  <Invoices />
+                </Navigation>
               </ProtectedRoute>
             } />
             
             <Route path="/data-management" element={
               <ProtectedRoute requiredRole="owner">
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <DataManagement />
-                  </main>
-                </>
+                <Navigation>
+                  <DataManagement />
+                </Navigation>
               </ProtectedRoute>
             } />
             
             <Route path="/followup" element={
               <ProtectedRoute>
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <FollowUp />
-                  </main>
-                </>
+                <Navigation>
+                  <FollowUp />
+                </Navigation>
               </ProtectedRoute>
             } />
             
             <Route path="/debug" element={
               <ProtectedRoute requiredRole="owner">
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <Debug />
-                  </main>
-                </>
+                <Navigation>
+                  <Debug />
+                </Navigation>
               </ProtectedRoute>
             } />
             
             <Route path="/auth-test" element={
               <ProtectedRoute>
-                <>
-                  <Navigation />
-                  <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
-                    <AuthTest />
-                  </main>
-                </>
+                <Navigation>
+                  <AuthTest />
+                </Navigation>
+              </ProtectedRoute>
+            } />
+            
+            {/* New Feature Routes */}
+            <Route path="/member-checkin" element={
+              <ProtectedRoute>
+                <Navigation>
+                  <MemberCheckIn />
+                </Navigation>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/analytics" element={
+              <ProtectedRoute requiredRole="owner">
+                <Navigation>
+                  <Analytics />
+                </Navigation>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/followups" element={
+              <ProtectedRoute>
+                <Navigation>
+                  <FollowUpManagement />
+                </Navigation>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <Navigation>
+                  <Settings />
+                </Navigation>
               </ProtectedRoute>
             } />
             

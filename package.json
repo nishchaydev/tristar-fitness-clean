@@ -9,7 +9,11 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "git": "node scripts/deploy.js"
+    "git": "node scripts/deploy.js",
+    "start": "node start-servers.js",
+    "start:all": "node start-servers.js",
+    "build:prod": "npm run build && cd backend && npm install --production",
+    "start:prod": "cd backend && NODE_ENV=production npm start"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -43,6 +47,7 @@
     "@supabase/supabase-js": "^2.50.3",
     "@tanstack/react-query": "^5.56.2",
     "@types/qrcode": "^1.5.5",
+    "axios": "^1.12.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",

@@ -3,7 +3,20 @@ import { ErrorBoundary } from 'react-error-boundary';
 import App from './App.tsx';
 import './index.css';
 
-console.log('main.tsx loading...');
+// Main entry point for the application
+
+// Register service worker for PWA functionality
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration);
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
 
 // Error fallback component
 function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
@@ -31,13 +44,10 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-console.log('Root element found, creating React root...');
-
 // Create root and render with error boundary
 const root = createRoot(rootElement);
 
-console.log('Rendering App component...');
-
+// Render the application
 root.render(
   <ErrorBoundary FallbackComponent={ErrorFallback}>
     <App />

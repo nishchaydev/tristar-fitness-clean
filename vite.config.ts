@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
   },
   server: {
     host: '0.0.0.0', // Listen on all network interfaces
-    port: 5173, // Back to original port
-    strictPort: true,
+    port: 3000, // Frontend port
+    strictPort: false,
   },
 }));
