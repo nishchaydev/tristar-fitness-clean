@@ -15,8 +15,10 @@ import {
   Clock,
   Users,
   DollarSign,
-  Bell
+  Bell,
+  Database
 } from 'lucide-react'
+import DatabaseSettings from '@/components/DatabaseSettings'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/hooks/use-toast'
 
@@ -47,6 +49,8 @@ const Settings = () => {
     checkInNotifications: true,
     followUpReminders: true
   })
+
+  const [showDatabaseSettings, setShowDatabaseSettings] = useState(false)
 
   const handleSaveSettings = () => {
     // Here you would typically save to backend
@@ -326,6 +330,30 @@ const Settings = () => {
         </CardContent>
       </Card>
 
+      {/* Database Settings */}
+      <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Database className="h-5 w-5 text-gray-600" />
+            <span>Database Management</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Manage your local database, view database location, and export data for backup purposes.
+            </p>
+            <Button 
+              onClick={() => setShowDatabaseSettings(true)}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Database className="h-4 w-4 mr-2" />
+              Open Database Settings
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* System Information */}
       <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
         <CardHeader>
@@ -359,6 +387,11 @@ const Settings = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Database Settings Modal */}
+      {showDatabaseSettings && (
+        <DatabaseSettings onClose={() => setShowDatabaseSettings(false)} />
+      )}
     </div>
   )
 }

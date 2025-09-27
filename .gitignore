@@ -6,6 +6,9 @@ node_modules/
 dist/
 build/
 
+# Electron build artifacts
+dist-electron/
+
 # Environment variables
 .env
 .env.local

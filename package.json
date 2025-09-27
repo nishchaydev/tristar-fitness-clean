@@ -1,6 +1,9 @@
 {
   "name": "tristar-fitness",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "TriStar Fitness - Professional Gym Management System",
+  "main": "electron/main.js",
+  "homepage": "https://nishchaydev.github.io/tristar-fitness-clean/",
   "packageManager": "pnpm@8.10.0",
   "scripts": {
     "dev": "vite",
@@ -13,7 +16,11 @@
     "start": "node start-servers.js",
     "start:all": "node start-servers.js",
     "build:prod": "npm run build && cd backend && npm install --production",
-    "start:prod": "cd backend && NODE_ENV=production npm start"
+    "start:prod": "cd backend && NODE_ENV=production npm start",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron:build": "npm run build && electron-builder",
+    "electron:dist": "npm run build && electron-builder --publish=never"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -74,6 +81,7 @@
     "react-router-dom": "^6.26.2",
     "recharts": "^2.12.7",
     "sonner": "^1.5.0",
+    "sqlite3": "^5.1.7",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^10.0.0",
@@ -90,6 +98,10 @@
     "@types/react-dom": "^19.1.8",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
+    "concurrently": "^9.2.1",
+    "electron": "^38.1.2",
+    "electron-builder": "^26.0.12",
+    "electron-is-dev": "^3.0.1",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
@@ -99,6 +111,37 @@
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^7.1.3"
+    "vite": "^7.1.3",
+    "wait-on": "^9.0.1"
+  },
+  "build": {
+    "appId": "com.tristarfitness.gymmanagement",
+    "productName": "TriStar Fitness",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "electron/**/*",
+      "public/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "public/tristar-logo.jpg"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "TriStar Fitness"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "public/tristar-logo.jpg"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "public/tristar-logo.jpg"
+    }
   }
 }

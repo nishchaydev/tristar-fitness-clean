@@ -113,7 +113,7 @@ export const useDataStore = create<DataStore>()(
       followUps: [],
       activities: [],
       checkIns: [],
-      
+
       // Member actions
       addMember: (memberData) => {
         const member: Member = {
@@ -177,7 +177,7 @@ export const useDataStore = create<DataStore>()(
       getMember: (id) => {
         return get().members.find((member) => member.id === id);
       },
-      
+
       // Invoice actions
       addInvoice: (invoiceData) => {
         const invoice: Invoice = {
@@ -236,7 +236,7 @@ export const useDataStore = create<DataStore>()(
       getInvoice: (id) => {
         return get().invoices.find((invoice) => invoice.id === id);
       },
-      
+
       // Follow-up actions
       addFollowUp: (followUpData) => {
         const followUp: FollowUp = {
@@ -295,7 +295,7 @@ export const useDataStore = create<DataStore>()(
       getFollowUp: (id) => {
         return get().followUps.find((followUp) => followUp.id === id);
       },
-      
+
       // Activity actions
       addActivity: (activityData) => {
         const activity: Activity = {
@@ -350,9 +350,9 @@ export const useDataStore = create<DataStore>()(
       // Utility actions
       clearAllData: () => {
         set({
-          members: [],
-          invoices: [],
-          followUps: [],
+        members: [],
+        invoices: [],
+        followUps: [],
           activities: [],
           checkIns: [],
         });
@@ -372,14 +372,14 @@ export const useDataStore = create<DataStore>()(
       importData: (data) => {
         try {
           const parsedData = JSON.parse(data);
-          set({
+           set({
             members: parsedData.members || [],
             invoices: parsedData.invoices || [],
             followUps: parsedData.followUps || [],
             activities: parsedData.activities || [],
             checkIns: parsedData.checkIns || [],
           });
-        } catch (error) {
+         } catch (error) {
           console.error('Failed to import data:', error);
         }
       },
