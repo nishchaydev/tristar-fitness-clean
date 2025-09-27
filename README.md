@@ -9,12 +9,13 @@ A comprehensive gym management web application built with React 19, TypeScript, 
 - **Manager**: Daily operations including member check-ins, invoice generation, and follow-ups
 
 ### **Core Functionality**
-- **Member Management**: Add, edit, and track member information
+- **Member Management**: Add, edit, and track member information with membership expiry warnings
 - **Daily Check-ins**: Real-time member attendance tracking
-- **Invoice System**: Professional PDF invoice generation with GST
+- **Invoice System**: Professional PDF invoice generation with GST and payment status management
 - **Visitor Management**: Track trial visitors and create follow-ups
 - **Follow-up System**: Task management with notes and scheduling
 - **Analytics Dashboard**: Business insights and performance metrics
+- **Expiring Memberships**: Dashboard panel showing memberships ending soon
 - **Role-based Security**: JWT authentication with protected routes
 
 ### **Technical Features**
@@ -26,6 +27,7 @@ A comprehensive gym management web application built with React 19, TypeScript, 
 - **PWA Support**: Installable app with service worker
 - **Dark Mode**: Toggle between light and dark themes
 - **Professional Branding**: TriStar Fitness logo and consistent styling
+- **SQLite Database**: Lightweight, file-based database for easy deployment
 
 ## 🛠️ Tech Stack
 
@@ -40,6 +42,7 @@ A comprehensive gym management web application built with React 19, TypeScript, 
 
 ### **Backend**
 - Express.js with Node.js
+- SQLite3 for database
 - JWT authentication
 - Express-validator for input validation
 - Helmet for security
@@ -79,13 +82,10 @@ cd ..
 
 3. **Start the application**
 ```bash
-# Option 1: Use the startup script (Recommended)
-npm start
+# Use the startup script (Recommended)
+node start-servers.js
 
-# Option 2: PowerShell script
-.\start-servers.ps1
-
-# Option 3: Manual start
+# Or start manually:
 # Terminal 1 - Backend
 cd backend
 npm start
@@ -95,21 +95,21 @@ npm run dev
 ```
 
 ### **Access the Application**
-- **Frontend**: http://localhost:6969
+- **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:6868
-- **API Health Check**: http://localhost:6868/api/health
+- **API Health Check**: http://localhost:6868/health
 
 ## 👥 Demo Accounts
 
 ### **Owner Account**
-- **Username**: `owner`
-- **Password**: `demo123`
+- **Username**: `owner@tristar.com`
+- **Password**: `owner123`
 - **Name**: Nikhil Verma
 - **Access**: Full system access including analytics and data management
 
 ### **Manager Account**
-- **Username**: `manager`
-- **Password**: `demo123`
+- **Username**: `manager@tristar.com`
+- **Password**: `manager123`
 - **Name**: Manager
 - **Access**: Daily operations, member management, and follow-ups
 
@@ -141,6 +141,14 @@ JWT_SECRET=your-secret-key
 ### **Frontend Configuration**
 The frontend automatically connects to the backend API. No additional configuration required.
 
+## 📊 Database
+
+The application uses **SQLite** for data storage:
+- **File Location**: `backend/database/tristar_fitness.db`
+- **Auto-initialization**: Tables are created automatically on first run
+- **Demo Data**: Sample data is inserted automatically
+- **Portable**: Single file database, easy to backup and deploy
+
 ## 📊 API Endpoints
 
 ### **Authentication**
@@ -157,6 +165,7 @@ The frontend automatically connects to the backend API. No additional configurat
 ### **Invoices**
 - `GET /api/invoices` - Get all invoices
 - `POST /api/invoices` - Create invoice
+- `PUT /api/invoices/:id` - Update invoice (mark as paid)
 - `GET /api/invoices/:id/pdf` - Download PDF invoice
 
 ### **Analytics**
@@ -174,11 +183,10 @@ cd backend
 NODE_ENV=production npm start
 ```
 
-### **Docker Deployment**
-```bash
-# Build and run with Docker
-docker-compose up --build
-```
+### **GitHub Pages**
+The application is automatically deployed to GitHub Pages:
+- **Live URL**: https://nishchaydev.github.io/tristar-fitness-clean/
+- **Auto-deployment**: Updates automatically on push to main branch
 
 ## 🔒 Security Features
 
@@ -210,33 +218,22 @@ The application is fully responsive and optimized for mobile devices:
 - **Responsive Design**: Optimized for all screen sizes
 - **Fast Loading**: Cached resources load instantly
 
-## 🚀 Production Deployment
+## 🎯 Key Features
 
-### **Build for Production**
-```bash
-# Build frontend
-npm run build:prod
+### **Expiring Memberships**
+- Dashboard panel showing memberships ending within 30 days
+- Color-coded urgency indicators (red for expired, orange for soon)
+- Quick access to member contact information
 
-# Build backend (if needed)
-cd backend && npm run build
-```
+### **Payment Management**
+- Mark invoices as paid/unpaid
+- Track payment status
+- Generate payment reminders
 
-### **Environment Variables**
-Create `.env` files in both root and backend directories:
-```bash
-# Frontend (.env)
-VITE_API_URL=http://localhost:6868
-
-# Backend (.env)
-PORT=6868
-JWT_SECRET=your-secret-key
-NODE_ENV=production
-```
-
-### **Deployment Options**
-- **Local Network**: Run on gym's local network
-- **Cloud Hosting**: Deploy to Vercel, Netlify, or similar
-- **Self-hosted**: Use Docker or traditional hosting
+### **Membership Tracking**
+- Start and end dates for all memberships
+- Automatic expiry warnings
+- Membership renewal reminders
 
 ## 🤝 Contributing
 

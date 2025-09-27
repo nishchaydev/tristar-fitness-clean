@@ -1,17 +1,20 @@
-const mongoose = require('mongoose');
+const { db, initializeTables, insertDemoData } = require('./sqlite');
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tristar-fitness', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        console.log('Connecting to SQLite database...');
+        initializeTables();
+        
+        // Insert demo data after a short delay to ensure tables are created
+        setTimeout(() => {
+            insertDemoData();
+        }, 1000);
+        
+        console.log('SQLite database connected successfully');
     } catch (error) {
-        console.error(`Error: ${error.message}`);
+        console.error(`Database connection error: ${error.message}`);
         process.exit(1);
     }
 };
 
-module.exports = connectDB;
+module.exports = { connectDB, db };
