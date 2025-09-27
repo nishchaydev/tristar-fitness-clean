@@ -1,6 +1,7 @@
 const express = require('express');
 const { body, validationResult, param, query } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
+const { requireManager } = require('../middleware/roleAuth');
 const router = express.Router();
 
 // Get the dataStore from the main server file
@@ -73,7 +74,7 @@ const validateMember = [
 ];
 
 // Get all members with filtering and pagination
-router.get('/', [
+router.get('/', requireManager, [
   query('status').optional().isIn(['active', 'expired', 'pending', 'suspended']),
   query('membershipType').optional().isIn(['monthly', 'quarterly', 'annual']),
   query('trainerId').optional().isUUID(),
@@ -641,3 +642,4 @@ router.get('/:id/stats', [
 });
 
 module.exports = router;
+

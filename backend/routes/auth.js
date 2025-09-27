@@ -133,9 +133,9 @@ router.post('/demo-login', [
         // Demo user validation
         const demoUsers = {
             'owner': { id: '1', username: 'owner', name: 'Nikhil Verma', role: 'owner', email: 'owner@tristarfitness.com' },
-            'trainer1': { id: '2', username: 'trainer1', name: 'Yash', role: 'trainer', email: 'trainer1@tristarfitness.com' },
-            'trainer2': { id: '3', username: 'trainer2', name: 'Mohit Sen', role: 'trainer', email: 'trainer2@tristarfitness.com' },
-            'trainer3': { id: '4', username: 'trainer3', name: 'Palak Dubey', role: 'trainer', email: 'trainer3@tristarfitness.com' }
+            'manager': { id: '2', username: 'manager', name: 'Manager', role: 'manager', email: 'manager@tristarfitness.com' },
+            'nikhil': { id: '3', username: 'nikhil', name: 'Nikhil Verma', role: 'owner', email: 'nikhil@tristarfitness.com' },
+            'raj': { id: '4', username: 'raj', name: 'Manager', role: 'manager', email: 'raj@tristarfitness.com' }
         };
         
         if (demoUsers[username] && password === 'demo123') {

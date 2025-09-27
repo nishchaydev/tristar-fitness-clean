@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const compression = require('compression');
 const morgan = require('morgan');
-const { testConnection } = require('./config/supabase');
+const SQLiteDatabase = require('./database/sqlite');
 const logger = require('./config/logger');
 const { createRateLimiters, securityMiddleware, corsOptions, requestLimits } = require('./middleware/security');
 const swaggerUi = require('swagger-ui-express');
@@ -13,21 +13,21 @@ console.log('🚀 Starting TriStar Fitness Backend Server...');
 
 // Initialize Express app
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 6868;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 console.log(`📋 Environment: ${NODE_ENV}`);
 console.log(`🔌 Port: ${PORT}`);
 
-// Test Supabase connection
-testConnection().then(success => {
-  if (success) {
-    logger.info('✅ Supabase database connected successfully');
-  } else {
-    logger.info('⚠️  Running in demo mode - no external database required');
-  }
+// Initialize SQLite database
+const db = new SQLiteDatabase();
+db.initialize().then(() => {
+  logger.info('✅ SQLite database connected successfully');
+  // Make database available to routes
+  app.locals.db = db;
 }).catch(err => {
   console.error('❌ Database connection error:', err);
+  logger.error('Database initialization failed:', err);
 });
 
 // Initialize cache (optional for now) - disabled for demo mode
