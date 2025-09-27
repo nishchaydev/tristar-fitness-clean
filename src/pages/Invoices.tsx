@@ -35,6 +35,8 @@ interface Invoice {
   dueDate: string
   status: 'pending' | 'paid' | 'overdue'
   notes?: string
+  membershipStartDate?: string
+  membershipEndDate?: string
 }
 
 const Invoices = () => {
@@ -47,6 +49,7 @@ const Invoices = () => {
   const invoices = dataStore?.invoices || []
   const addInvoice = dataStore?.addInvoice || (() => {})
   const addActivity = dataStore?.addActivity || (() => {})
+  const updateInvoice = dataStore?.updateInvoice || (() => {})
   
   const [showForm, setShowForm] = useState(false)
   const [selectedMember, setSelectedMember] = useState('')
@@ -54,6 +57,8 @@ const Invoices = () => {
   const [currentItem, setCurrentItem] = useState({ description: '', quantity: 1, price: 0 })
   const [notes, setNotes] = useState('')
   const [dueDate, setDueDate] = useState('')
+  const [membershipStartDate, setMembershipStartDate] = useState('')
+  const [membershipEndDate, setMembershipEndDate] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
   // Debug logging
@@ -137,7 +142,12 @@ const Invoices = () => {
       date: new Date().toISOString().split('T')[0],
       dueDate: dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
       status: 'pending',
-      notes: notes
+      notes: notes,
+      membershipStartDate: membershipStartDate || new Date().toISOString().split('T')[0],
+      membershipEndDate: membershipEndDate || (membershipStartDate ? 
+        new Date(new Date(membershipStartDate).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : 
+        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      )
     }
 
     // Add to data store
@@ -224,6 +234,35 @@ Status: ${invoice.status}
     alert(previewContent)
   }
 
+  const markAsPaid = (invoiceId: string) => {
+    try {
+      // Update invoice status to paid
+      updateInvoice(invoiceId, { status: 'paid' })
+      
+      // Add activity
+      addActivity({
+        type: 'payment',
+        action: 'Payment received',
+        name: `Invoice ${invoiceId} marked as paid`,
+        time: new Date().toISOString(),
+        details: `Payment received for invoice ${invoiceId}`,
+        invoiceId: invoiceId
+      })
+
+      toast({
+        title: "Payment Recorded",
+        description: "Invoice has been marked as paid successfully.",
+      })
+    } catch (error) {
+      console.error('Error marking invoice as paid:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update payment status. Please try again.",
+        variant: "destructive"
+      })
+    }
+  }
+
   // Show loading state
   if (isLoading) {
     return (
@@ -307,6 +346,32 @@ Status: ${invoice.status}
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
+                  className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                />
+              </div>
+            </div>
+
+            {/* Membership Dates */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="membershipStartDate" className="text-gray-700 dark:text-gray-300">Membership Start Date</Label>
+                <Input
+                  id="membershipStartDate"
+                  type="date"
+                  value={membershipStartDate}
+                  onChange={(e) => setMembershipStartDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                />
+              </div>
+              <div>
+                <Label htmlFor="membershipEndDate" className="text-gray-700 dark:text-gray-300">Membership End Date</Label>
+                <Input
+                  id="membershipEndDate"
+                  type="date"
+                  value={membershipEndDate}
+                  onChange={(e) => setMembershipEndDate(e.target.value)}
+                  min={membershipStartDate || new Date().toISOString().split('T')[0]}
                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>
@@ -532,6 +597,14 @@ Status: ${invoice.status}
                           <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Description</p>
                           <p className="text-sm text-gray-900 dark:text-white">{invoice.description}</p>
                         </div>
+                        {invoice.membershipStartDate && (
+                          <div>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Membership Period</p>
+                            <p className="text-sm text-gray-900 dark:text-white">
+                              {format(parseISO(invoice.membershipStartDate), 'dd MMM yyyy')} - {format(parseISO(invoice.membershipEndDate || invoice.membershipStartDate), 'dd MMM yyyy')}
+                            </p>
+                          </div>
+                        )}
                       </div>
                       
                       {/* Amount Breakdown */}
@@ -574,6 +647,17 @@ Status: ${invoice.status}
                           <Download className="h-4 w-4 mr-2" />
                           Download PDF
                         </Button>
+                        
+                        {invoice.status === 'pending' && (
+                          <Button
+                            onClick={() => markAsPaid(invoice.id)}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white hover:scale-105 transition-all duration-200"
+                          >
+                            <FileText className="h-4 w-4 mr-2" />
+                            Mark as Paid
+                          </Button>
+                        )}
+                        
                         <Button
                           variant="outline"
                           onClick={() => previewInvoice({

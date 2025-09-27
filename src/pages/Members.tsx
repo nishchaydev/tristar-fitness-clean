@@ -74,6 +74,30 @@ const Members = () => {
     }
   }
 
+  const getDaysUntilExpiry = (expiryDate: string) => {
+    const today = new Date()
+    const expiry = new Date(expiryDate)
+    const diffTime = expiry.getTime() - today.getTime()
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays
+  }
+
+  const getExpiryWarning = (expiryDate: string) => {
+    const daysLeft = getDaysUntilExpiry(expiryDate)
+    
+    if (daysLeft < 0) {
+      return { text: 'EXPIRED', color: 'text-red-600 bg-red-100', icon: '⚠️' }
+    } else if (daysLeft <= 3) {
+      return { text: `${daysLeft} days left`, color: 'text-red-600 bg-red-100', icon: '🚨' }
+    } else if (daysLeft <= 7) {
+      return { text: `${daysLeft} days left`, color: 'text-orange-600 bg-orange-100', icon: '⚠️' }
+    } else if (daysLeft <= 30) {
+      return { text: `${daysLeft} days left`, color: 'text-yellow-600 bg-yellow-100', icon: '⏰' }
+    } else {
+      return { text: `${daysLeft} days left`, color: 'text-green-600 bg-green-100', icon: '✅' }
+    }
+  }
+
   const filteredMembers = members.filter(member => {
     const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -222,6 +246,10 @@ const Members = () => {
                         <h3 className="font-medium text-lg">{member.name}</h3>
                         <Badge className={getStatusColor(member.status)}>
                           {member.status.toUpperCase()}
+                        </Badge>
+                        <Badge className={`px-2 py-1 text-xs font-semibold rounded-full ${getExpiryWarning(member.expiryDate).color}`}>
+                          <span className="mr-1">{getExpiryWarning(member.expiryDate).icon}</span>
+                          {getExpiryWarning(member.expiryDate).text}
                         </Badge>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
