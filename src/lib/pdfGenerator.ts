@@ -56,13 +56,12 @@ export class PDFGenerator {
     
     // Address
     this.doc.setFontSize(9)
-    this.doc.text('SAPNA SANGEETA MAIN ROAD NEXT TO LOTUS ELECTRONICS, INDORE City, HC 12345', 105, 35, { align: 'center' })
+    this.doc.text('SAPNA SANGEETA MAIN ROAD NEXT TO LOTUS ELECTRONICS, INDORE', 105, 35, { align: 'center' })
     
     // Contact info
     this.doc.setFontSize(8)
-    this.doc.text('+91 98765 43210', 105, 42, { align: 'center' })
-    this.doc.text('076930 06065', 105, 47, { align: 'center' })
-    this.doc.text('info@tristarfitness.com', 105, 52, { align: 'center' })
+    this.doc.text('7693006066, 8103199510', 105, 42, { align: 'center' })
+    this.doc.text('tristarfitness26@gmail.com', 105, 47, { align: 'center' })
     
     // White background for invoice details
     this.doc.setFillColor(255, 255, 255)

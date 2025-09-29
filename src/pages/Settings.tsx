@@ -15,7 +15,6 @@ import {
   Clock,
   Users,
   DollarSign,
-  Bell,
   Database
 } from 'lucide-react'
 import DatabaseSettings from '@/components/DatabaseSettings'
@@ -27,27 +26,19 @@ const Settings = () => {
   const { toast } = useToast()
   
   const [gymSettings, setGymSettings] = useState({
-    name: 'TriStar Fitness',
+    name: 'TRI-STAR FITNESS',
     address: 'SAPNA SANGEETA MAIN ROAD NEXT TO LOTUS ELECTRONICS, INDORE',
-    phone: '+91 98765 43210',
-    email: 'info@tristarfitness.com',
+    phone: '7693006066, 8103199510',
+    email: 'tristarfitness26@gmail.com',
     website: 'www.tristarfitness.com',
-    timings: '6:00 AM - 10:00 PM',
+    timings: 'Morning: 6:30 AM - 11:00 AM, Evening: 4:30 PM - 10:00 PM',
     establishedYear: '2020',
     capacity: '200',
-    monthlyFee: '1000',
-    quarterlyFee: '2500',
-    halfYearlyFee: '4500',
-    yearlyFee: '8000'
-  })
-
-  const [notificationSettings, setNotificationSettings] = useState({
-    emailNotifications: true,
-    smsNotifications: true,
-    membershipExpiryAlerts: true,
-    paymentReminders: true,
-    checkInNotifications: true,
-    followUpReminders: true
+    monthlyFee: '1999',
+    quarterlyFee: '5500',
+    halfYearlyFee: '6999',
+    yearlyFee: '8500',
+    personalTrainingFee: '5500'
   })
 
   const [showDatabaseSettings, setShowDatabaseSettings] = useState(false)
@@ -57,14 +48,6 @@ const Settings = () => {
     toast({
       title: "Settings Saved",
       description: "Gym settings have been updated successfully.",
-    })
-  }
-
-  const handleSaveNotifications = () => {
-    // Here you would typically save to backend
-    toast({
-      title: "Notification Settings Saved",
-      description: "Notification preferences have been updated successfully.",
     })
   }
 
@@ -222,7 +205,16 @@ const Settings = () => {
                 id="yearlyFee"
                 value={gymSettings.yearlyFee}
                 onChange={(e) => setGymSettings(prev => ({ ...prev, yearlyFee: e.target.value }))}
-                placeholder="8000"
+                placeholder="8500"
+              />
+            </div>
+            <div>
+              <Label htmlFor="personalTrainingFee">Personal Training (₹)</Label>
+              <Input
+                id="personalTrainingFee"
+                value={gymSettings.personalTrainingFee}
+                onChange={(e) => setGymSettings(prev => ({ ...prev, personalTrainingFee: e.target.value }))}
+                placeholder="5500"
               />
             </div>
           </div>
@@ -230,102 +222,6 @@ const Settings = () => {
           <Button onClick={handleSaveSettings} className="bg-green-600 hover:bg-green-700">
             <Save className="h-4 w-4 mr-2" />
             Save Pricing
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Notification Settings */}
-      <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Bell className="h-5 w-5 text-orange-600" />
-            <span>Notification Settings</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div>
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">Email Notifications</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Receive notifications via email</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={notificationSettings.emailNotifications}
-                onChange={(e) => setNotificationSettings(prev => ({ ...prev, emailNotifications: e.target.checked }))}
-                className="h-4 w-4 text-blue-600 rounded"
-              />
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div>
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">SMS Notifications</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Receive notifications via SMS</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={notificationSettings.smsNotifications}
-                onChange={(e) => setNotificationSettings(prev => ({ ...prev, smsNotifications: e.target.checked }))}
-                className="h-4 w-4 text-blue-600 rounded"
-              />
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div>
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">Membership Expiry Alerts</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Get notified when memberships are about to expire</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={notificationSettings.membershipExpiryAlerts}
-                onChange={(e) => setNotificationSettings(prev => ({ ...prev, membershipExpiryAlerts: e.target.checked }))}
-                className="h-4 w-4 text-blue-600 rounded"
-              />
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div>
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">Payment Reminders</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Send reminders for pending payments</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={notificationSettings.paymentReminders}
-                onChange={(e) => setNotificationSettings(prev => ({ ...prev, paymentReminders: e.target.checked }))}
-                className="h-4 w-4 text-blue-600 rounded"
-              />
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div>
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">Check-in Notifications</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Get notified when members check in</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={notificationSettings.checkInNotifications}
-                onChange={(e) => setNotificationSettings(prev => ({ ...prev, checkInNotifications: e.target.checked }))}
-                className="h-4 w-4 text-blue-600 rounded"
-              />
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div>
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">Follow-up Reminders</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Remind about pending follow-ups</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={notificationSettings.followUpReminders}
-                onChange={(e) => setNotificationSettings(prev => ({ ...prev, followUpReminders: e.target.checked }))}
-                className="h-4 w-4 text-blue-600 rounded"
-              />
-            </div>
-          </div>
-
-          <Button onClick={handleSaveNotifications} className="bg-orange-600 hover:bg-orange-700">
-            <Save className="h-4 w-4 mr-2" />
-            Save Notification Settings
           </Button>
         </CardContent>
       </Card>

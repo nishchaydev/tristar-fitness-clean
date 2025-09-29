@@ -1,7 +1,9 @@
 const { app, BrowserWindow, Menu, shell, ipcMain } = require('electron');
 const path = require('path');
-const isDev = require('electron-is-dev');
 const Database = require('./db');
+
+// Check if we're in development mode
+const isDev = process.env.NODE_ENV === 'development' || process.env.ELECTRON_IS_DEV === '1';
 
 let mainWindow;
 let database;
@@ -17,7 +19,7 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
-      webSecurity: true,
+      webSecurity: false, // Disable web security to allow local file access
       preload: path.join(__dirname, 'preload.js')
     },
     icon: path.join(__dirname, '../public/tristar-logo.jpg'),
@@ -29,9 +31,19 @@ function createWindow() {
   // Load the app from local dist folder
   const startUrl = isDev 
     ? 'http://localhost:3000' 
-    : `file://${path.join(__dirname, '../dist/index.html')}`;
+    : `file://${path.resolve(__dirname, '../dist/index.html')}`;
   
+  console.log('Loading URL:', startUrl);
   mainWindow.loadURL(startUrl);
+
+  // Add error handling
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    console.error('Failed to load:', errorCode, errorDescription, validatedURL);
+  });
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('Page loaded successfully');
+  });
 
   // Show window when ready
   mainWindow.once('ready-to-show', () => {

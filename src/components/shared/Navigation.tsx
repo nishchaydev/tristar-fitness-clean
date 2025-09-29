@@ -52,7 +52,7 @@ const Navigation = ({ children }: NavigationProps) => {
           <Link to="/dashboard" className="flex items-center space-x-3 group">
             <div className="w-10 h-10 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 overflow-hidden">
               <img 
-                src="/tristar-logo.jpg" 
+                src={`${import.meta.env.BASE_URL}tristar-logo.jpg`} 
                 alt="TriStar Fitness" 
                 className="w-full h-full object-cover rounded-lg"
               />
@@ -171,7 +171,7 @@ const Navigation = ({ children }: NavigationProps) => {
               <Link to="/dashboard" className="flex items-center space-x-3 group" onClick={() => setIsMobileMenuOpen(false)}>
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center shadow-lg">
                   <img 
-                    src="/tristar-logo.jpg" 
+                    src={`${import.meta.env.BASE_URL}tristar-logo.jpg`} 
                     alt="TriStar Fitness" 
                     className="w-full h-full object-cover rounded-lg"
                   />

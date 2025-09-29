@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Dumbbell, User, Lock, Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ username: 'manager@tristar.com', password: 'manager123' });
+  const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
@@ -135,17 +135,6 @@ const Login = () => {
                 )}
               </Button>
             </form>
-
-            {/* Demo Account Info */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                <p className="text-sm text-blue-800 dark:text-blue-200 font-medium mb-2">Demo Credentials</p>
-                <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
-                  <p><strong>Manager:</strong> manager@tristar.com / manager123</p>
-                  <p><strong>Owner:</strong> owner@tristar.com / owner123</p>
-                </div>
-              </div>
-            </div>
           </CardContent>
         </Card>
 
