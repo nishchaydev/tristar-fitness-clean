@@ -20,12 +20,12 @@ export interface AuthState {
   isLoading: boolean;
 }
 
-// Sample users for demonstration (using fictional data)
+// Production users for TriStar Fitness
 export const sampleUsers: User[] = [
   {
     id: '1',
-    username: 'nikhil',
-    email: 'nikhil@tristarfitness.com',
+    username: 'nikhil@tristar',
+    email: 'nikhil@tristar.com',
     role: 'owner',
     name: 'Nikhil Verma',
     phone: '+91 98765 43210',
@@ -34,75 +34,20 @@ export const sampleUsers: User[] = [
   },
   {
     id: '2',
-    username: 'yash',
-    email: 'yash@tristarfitness.com',
-    role: 'trainer',
-    name: 'Yash',
-    phone: '+91 98765 43210',
-    createdAt: '2024-01-01T00:00:00.000Z',
-    lastLogin: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    username: 'mohit',
-    email: 'mohit@tristarfitness.com',
-    role: 'trainer',
-    name: 'Mohit Sen',
-    phone: '+91 98765 43211',
-    createdAt: '2024-01-01T00:00:00.000Z',
-    lastLogin: new Date().toISOString(),
-  },
-  {
-    id: '4',
-    username: 'palak',
-    email: 'palak@tristarfitness.com',
-    role: 'trainer',
-    name: 'Palak Dubey',
-    phone: '+91 98765 43212',
-    createdAt: '2024-01-01T00:00:00.000Z',
-    lastLogin: new Date().toISOString(),
-  },
-  {
-    id: '5',
-    username: 'owner',
-    email: 'owner@tristarfitness.com',
-    role: 'owner',
-    name: 'Nikhil Verma',
-    phone: '+91 98765 43213',
-    createdAt: '2024-01-01T00:00:00.000Z',
-    lastLogin: new Date().toISOString(),
-  },
-  {
-    id: '6',
-    username: 'raj',
-    email: 'raj@tristarfitness.com',
-    role: 'semi-admin',
-    name: 'Manager',
-    phone: '+91 98765 43214',
-    createdAt: '2024-01-01T00:00:00.000Z',
-    lastLogin: new Date().toISOString(),
-  },
-  {
-    id: '7',
-    username: 'manager@tristar.com',
+    username: 'manager@tristar',
     email: 'manager@tristar.com',
     role: 'semi-admin',
     name: 'Manager',
-    phone: '+91 98765 43215',
+    phone: '+91 98765 43211',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
   }
 ];
 
-// Simple password storage (in real app, use proper hashing)
+// Production passwords for TriStar Fitness
 const userPasswords: Record<string, string> = {
-  'owner': 'demo123',
-  'nikhil': 'demo123',
-  'yash': 'demo123',
-  'mohit': 'demo123',
-  'palak': 'demo123',
-  'raj': 'demo123',
-  'manager@tristar.com': 'manager123',
+  'nikhil@tristar': 'nikhilverma@tristar',
+  'manager@tristar': 'manager@tristarfitness',
 };
 
 // Global user data store for profile updates
