@@ -81,6 +81,16 @@ export const sampleUsers: User[] = [
     phone: '+91 98765 43214',
     createdAt: '2024-01-01T00:00:00.000Z',
     lastLogin: new Date().toISOString(),
+  },
+  {
+    id: '7',
+    username: 'manager@tristar.com',
+    email: 'manager@tristar.com',
+    role: 'semi-admin',
+    name: 'Manager',
+    phone: '+91 98765 43215',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    lastLogin: new Date().toISOString(),
   }
 ];
 
@@ -92,6 +102,7 @@ const userPasswords: Record<string, string> = {
   'mohit': 'demo123',
   'palak': 'demo123',
   'raj': 'demo123',
+  'manager@tristar.com': 'manager123',
 };
 
 // Global user data store for profile updates
