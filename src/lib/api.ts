@@ -28,9 +28,9 @@ class ApiClient {
     this.checkConnectivity();
   }
 
-    setBaseURL(url: string) {
-      this.baseURL = url;
-    }
+  setBaseURL(url: string) {
+    this.baseURL = url;
+  }
 
   private async checkConnectivity(): Promise<void> {
     const candidates = [
@@ -119,10 +119,12 @@ class ApiClient {
         body: JSON.stringify({ username, password }),
       });
 
-      if (response.success && response.token) {
-        this.token = response.token;
+      if (response.success && (response as any).token) {
+        // @ts-ignore
+        this.token = (response as any).token;
         localStorage.setItem('auth_token', this.token);
-        localStorage.setItem('tristar_fitness_user', JSON.stringify(response.user));
+        // @ts-ignore
+        localStorage.setItem('tristar_fitness_user', JSON.stringify((response as any).user));
       }
 
       return response;

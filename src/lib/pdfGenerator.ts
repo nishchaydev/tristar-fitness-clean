@@ -80,7 +80,7 @@ export class PDFGenerator {
       try {
         // Place logo inside the white circle
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this.doc as any).addImage(logoDataUrl, 'JPEG', 13, 13, 24, 24)
+        ;(this.doc as any).addImage(logoDataUrl, 'JPEG', 13, 13, 24, 24)
       } catch {
         this.doc.setFontSize(12)
         this.doc.setFont('helvetica', 'bold')
@@ -159,7 +159,7 @@ export class PDFGenerator {
     // Totals
     this.addTotals(invoiceData)
     
-    // Footer
+    // Footer and terms
     this.addNotesAndFooter(invoiceData)
     
     return this.doc
@@ -322,14 +322,16 @@ export class PDFGenerator {
     } catch {
       // ignore if logo can't be loaded
     }
+    // Try optional font loading only if fonts are available; otherwise skip
     try {
       loadedFontName = await loadAndRegisterFont(generator, '/fonts/NotoSans-Regular.ttf', 'NotoSans')
-      if (loadedFontName) supportsRupee = true
       if (!loadedFontName) {
         loadedFontName = await loadAndRegisterFont(generator, '/fonts/Roboto-Regular.ttf', 'Roboto')
-        if (loadedFontName) supportsRupee = true
       }
-      if (loadedFontName) generator.setFontFamily(loadedFontName)
+      if (loadedFontName) {
+        supportsRupee = true
+        generator.setFontFamily(loadedFontName)
+      }
     } catch {
       supportsRupee = false
     }

@@ -138,9 +138,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatch({ type: 'LOGIN_START' });
     
     try {
-      // Always try local authentication first for demo purposes
+      // First, check if backend is reachable
+      const backendAvailable = await checkBackendAvailability();
+      if (backendAvailable) {
+        try {
+          const resp = await apiClient.login(credentials.username, credentials.password);
+          // apiClient.login returns ApiResponse with token and user
+          if (resp.success && (resp as any).token) {
+            const user = (resp as any).user as User;
+            dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+            return true;
+          }
+          dispatch({ type: 'LOGIN_FAILURE' });
+          return false;
+        } catch (e) {
+          console.warn('Backend login failed, trying local demo auth');
+        }
+      }
+
+      // Offline or backend login failed: try local demo authentication
       const user = authenticateUser(credentials);
-      
       if (user) {
         // Create a demo token
         const demoToken = `demo-token-${Date.now()}`;
@@ -149,10 +166,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('tristar_fitness_user', JSON.stringify(user));
         dispatch({ type: 'LOGIN_SUCCESS', payload: user });
         return true;
-      } else {
-        dispatch({ type: 'LOGIN_FAILURE' });
-        return false;
       }
+
+      dispatch({ type: 'LOGIN_FAILURE' });
+      return false;
     } catch (error) {
       console.error('Login error:', error);
       dispatch({ type: 'LOGIN_FAILURE' });

@@ -24,6 +24,12 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 console.log(`📋 Environment: ${NODE_ENV}`);
 console.log(`🔌 Port: ${PORT}`);
 
+// Enforce JWT secret in production
+if (NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+  console.error('❌ Missing JWT_SECRET in production. Set JWT_SECRET environment variable.');
+  process.exit(1);
+}
+
 // Initialize SQLite database
 const db = new SQLiteDatabase();
 db.initialize()
@@ -85,6 +91,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, {
 
 // Serve JSON cache statically
 app.use('/api/static', express.static(path.resolve(__dirname, 'data')));
+// Back-compat: serve raw data path used by frontend fallbacks
+app.use('/backend/data', express.static(path.resolve(__dirname, 'data')));
 
 console.log('📚 Swagger documentation initialized');
 

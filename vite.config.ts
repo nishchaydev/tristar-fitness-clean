@@ -4,7 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' && process.env.ELECTRON_BUILD ? './' : mode === 'production' ? '/tristar-fitness-clean/' : '/',
+  base: mode === 'production' ? '/tristar-fitness-clean/' : '/',
   plugins: [
     react(),
   ],
