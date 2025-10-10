@@ -1,0 +1,10 @@
+TriStar Fitness Pre-Built Package 
+Created: 04-10-2025 21:45:30.44 
+Version: 1.0.0 
+ 
+Contents: 
+- app/ (Web application files) 
+- backend/ (Backend server files) 
+- Start-TriStar-Fitness.bat (Main startup script) 
+- Install-TriStar-Fitness.bat (Installation script) 
+- README.md (Documentation) 

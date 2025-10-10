@@ -1,0 +1,17 @@
+{
+  "name": "TriStar Fitness",
+  "short_name": "TriStar",
+  "description": "Gym Management System",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "tristar-logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}

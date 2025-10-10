@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 142.1 76.2% 36.3%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 142.1 76.2% 36.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 142.1 70.6% 45.3%;
+    --primary-foreground: 144.9 80.4% 10%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 142.1 70.6% 45.3%;
+  }
+
+  /* Enhanced dark mode styles */
+  .dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+
+  .dark .bg-white {
+    @apply bg-gray-900;
+  }
+
+  .dark .text-gray-900 {
+    @apply text-gray-100;
+  }
+
+  .dark .text-gray-600 {
+    @apply text-gray-400;
+  }
+
+  .dark .text-gray-500 {
+    @apply text-gray-400;
+  }
+
+  .dark .border-gray-200 {
+    @apply border-gray-700;
+  }
+
+  .dark .bg-gray-50 {
+    @apply bg-gray-800;
+  }
+
+  .dark .bg-gray-100 {
+    @apply bg-gray-900;
+  }
+
+  /* Prevent white flash during theme loading */
+  html {
+    @apply transition-colors duration-200;
+  }
+
+  /* Mobile-specific styles */
+  @media (max-width: 640px) {
+    .container {
+      @apply px-4;
+    }
+    
+    .nav-enhanced {
+      @apply px-2;
+    }
+    
+    .nav-enhanced .nav-item {
+      @apply text-sm px-2 py-1;
+    }
+    
+    .nav-enhanced .nav-item span {
+      @apply hidden sm:inline;
+    }
+  }
+
+  /* Tablet-specific styles */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .container {
+      @apply px-6;
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-semibold tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h4 {
+    @apply text-xl md:text-2xl;
+  }
+
+  h5 {
+    @apply text-lg md:text-xl;
+  }
+
+  h6 {
+    @apply text-base md:text-lg;
+  }
+}
+
+@layer components {
+  .nav-enhanced {
+    @apply shadow-sm backdrop-blur-sm bg-white/95 dark:bg-gray-900/95 border-b border-gray-200 dark:border-gray-800;
+    /* Ensure smooth theme transitions */
+    @apply transition-all duration-200;
+  }
+
+  .nav-enhanced .nav-item {
+    @apply font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white;
+  }
+
+  .nav-enhanced .nav-item.active {
+    @apply bg-tristar-600 text-white shadow-lg;
+  }
+
+  .nav-item {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  .nav-item:hover {
+    @apply transform translate-y-[-1px];
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 dark:hover:shadow-gray-800/50;
+  }
+
+  .btn-primary {
+    @apply bg-tristar-600 hover:bg-tristar-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+
+  .status-active {
+    @apply bg-success-light text-white px-2 py-1 rounded-full text-xs font-medium;
+  }
+
+  .status-expired {
+    @apply bg-danger-light text-white px-2 py-1 rounded-full text-xs font-medium;
+  }
+
+  /* Mobile responsive utilities */
+  .mobile-hidden {
+    @apply hidden sm:block;
+  }
+
+  .mobile-only {
+    @apply block sm:hidden;
+  }
+
+  .tablet-hidden {
+    @apply hidden md:block;
+  }
+
+  .tablet-only {
+    @apply block md:hidden;
+  }
+
+  /* Touch-friendly button sizes for mobile */
+  @media (max-width: 640px) {
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+      @apply py-3 px-6 text-base;
+    }
+    
+    .nav-item {
+      @apply py-2 px-3;
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-tristar-600 to-tristar-800 bg-clip-text text-transparent;
+  }
+
+  .glass-effect {
+    @apply backdrop-blur-sm bg-white/80 dark:bg-gray-900/80 border border-white/20 dark:border-gray-800/20;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break {
+    page-break-before: always;
+  }
+}
